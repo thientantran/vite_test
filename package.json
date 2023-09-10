@@ -12,6 +12,10 @@
   },
   "dependencies": {
     "@hookform/resolvers": "^3.3.1",
+    "@tanstack/react-query": "^4.35.0",
+    "@tanstack/react-query-devtools": "^4.35.0",
+    "axios": "^1.5.0",
+    "lodash": "^4.17.21",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
     "react-hook-form": "^7.46.1",
@@ -19,6 +23,7 @@
     "yup": "^1.2.0"
   },
   "devDependencies": {
+    "@types/lodash": "^4.14.198",
     "@types/react": "^18.2.15",
     "@types/react-dom": "^18.2.7",
     "@vitejs/plugin-react": "^4.0.3",
