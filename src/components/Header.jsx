@@ -1,13 +1,30 @@
 import React from "react";
 import { Link } from "react-router-dom";
 
+import Popover from "./Popover";
+
 export default function Header() {
   return (
     <div className="bg-[linear-gradient(-180deg,#f53d2d,#f63)] pb-5 pt-2 text-white">
       <div className="container">
         {/* Row 1 */}
         <div className="flex justify-end">
-          <div className="flex items-center hover:text-gray-300 cursor-pointer">
+          <Popover
+            element="span"
+            className="flex items-center hover:text-gray-300 cursor-pointer"
+            renderPopover={
+              <div className="relative rounded-sm border border-gray-200 bg-white shadow-md">
+                <div className="flex flex-col px-3 py-2">
+                  <button className="px-3 py-2 hover:text-orange">
+                    Tieng Viet
+                  </button>
+                  <button className="mt-2 px-3 py-2 hover:text-orange">
+                    Tieng Anh
+                  </button>
+                </div>
+              </div>
+            }
+          >
             <svg
               xmlns="http://www.w3.org/2000/svg"
               fill="none"
@@ -37,8 +54,29 @@ export default function Header() {
                 d="M19.5 5.25l-7.5 7.5-7.5-7.5m15 6l-7.5 7.5-7.5-7.5"
               />
             </svg>
-          </div>
-          <div className="flex items-center ml-6 hover:text-gray-300 cursor-pointer">
+          </Popover>
+          <Popover
+            className="flex items-center ml-6 hover:text-gray-300 cursor-pointer"
+            renderPopover={
+              <div className="relative rounded-sm border border-gray-200 bg-white shadow-md">
+                <Link
+                  to="/"
+                  className="hover:bg-stale-100 block w-full bg-white px-4 py-3 text-left hover:text-cyan-500"
+                >
+                  Tai khoan cua toi
+                </Link>
+                <Link
+                  to="/"
+                  className="hover:bg-stale-100 block w-full bg-white px-4 py-3 text-left hover:text-cyan-500"
+                >
+                  Don mua
+                </Link>
+                <button className="hover:bg-stale-100 block w-full bg-white px-4 py-3 text-left hover:text-cyan-500">
+                  Dang xuat
+                </button>
+              </div>
+            }
+          >
             <div className="mr-2 w-8 h-8">
               <img
                 src="https://down-vn.img.susercontent.com/file/br-11134226-7qukw-levcx0zgr2n3d2_tn"
@@ -48,7 +86,7 @@ export default function Header() {
             </div>
 
             <div>thientantm</div>
-          </div>
+          </Popover>
         </div>
         {/* Row 2 */}
         <div className="grid grid-cols-12 gap-4 mt-2">
@@ -90,22 +128,96 @@ export default function Header() {
             </form>
           </div>
           <div className="col-span-1 flex justify-center items-center">
-            <Link to="/">
-              <svg
-                xmlns="http://www.w3.org/2000/svg"
-                fill="none"
-                viewBox="0 0 24 24"
-                strokeWidth={1.5}
-                stroke="currentColor"
-                className="h-6 w-6"
-              >
-                <path
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  d="M2.25 3h1.386c.51 0 .955.343 1.087.835l.383 1.437M7.5 14.25a3 3 0 00-3 3h15.75m-12.75-3h11.218c1.121-2.3 2.1-4.684 2.924-7.138a60.114 60.114 0 00-16.536-1.84M7.5 14.25L5.106 5.272M6 20.25a.75.75 0 11-1.5 0 .75.75 0 011.5 0zm12.75 0a.75.75 0 11-1.5 0 .75.75 0 011.5 0z"
-                />
-              </svg>
-            </Link>
+            <Popover
+              placement="bottom-end"
+              renderPopover={
+                <div className="relative max-w-[400px] rounded-sm border border-gray-200 bg-white text-sm shadow-md">
+                  <div className="p-2">
+                    <div className="capitalize text-gray-400">
+                      San pham moi them
+                    </div>
+                    <div className="mt-5">
+                      <div className="mt-4 flex items-center">
+                        <div className="flex-shrink-0">
+                          <img
+                            src="https://img.tgdd.vn/imgt/f_webp,fit_outside,quality_100,s_300x300/https://cdn.tgdd.vn/Products/Images/44/253703/s16/apple-macbook-pro-14-m1-pro-2021-xam-thumb-650x650.png"
+                            alt="anh"
+                            className="h-11 w-11 object-cover"
+                          />
+                        </div>
+                        <div className="ml-2 flex-grow overflow-hidden">
+                          <div className="truncate">
+                            MacBook Pro 14 inch M1 Pro 2021 16-Core GPU
+                          </div>
+                        </div>
+                        <div className="ml-2 flex-shrink-0">
+                          <span className="text-orange">41.990.000</span>
+                        </div>
+                      </div>
+                      <div className="mt-4 flex items-center">
+                        <div className="flex-shrink-0">
+                          <img
+                            src="https://img.tgdd.vn/imgt/f_webp,fit_outside,quality_100,s_300x300/https://cdn.tgdd.vn/Products/Images/44/253703/s16/apple-macbook-pro-14-m1-pro-2021-xam-thumb-650x650.png"
+                            alt="anh"
+                            className="h-11 w-11 object-cover"
+                          />
+                        </div>
+                        <div className="ml-2 flex-grow overflow-hidden">
+                          <div className="truncate">
+                            MacBook Pro 14 inch M1 Pro 2021 16-Core GPU
+                          </div>
+                        </div>
+                        <div className="ml-2 flex-shrink-0">
+                          <span className="text-orange">41.990.000</span>
+                        </div>
+                      </div>
+                      <div className="mt-4 flex items-center">
+                        <div className="flex-shrink-0">
+                          <img
+                            src="https://img.tgdd.vn/imgt/f_webp,fit_outside,quality_100,s_300x300/https://cdn.tgdd.vn/Products/Images/44/253703/s16/apple-macbook-pro-14-m1-pro-2021-xam-thumb-650x650.png"
+                            alt="anh"
+                            className="h-11 w-11 object-cover"
+                          />
+                        </div>
+                        <div className="ml-2 flex-grow overflow-hidden">
+                          <div className="truncate">
+                            MacBook Pro 14 inch M1 Pro 2021 16-Core GPU
+                          </div>
+                        </div>
+                        <div className="ml-2 flex-shrink-0">
+                          <span className="text-orange">41.990.000</span>
+                        </div>
+                      </div>
+                    </div>
+                    <div className="mt-6 flex items-center justify-between">
+                      <div className="capitailize text-xs text-gray-500">
+                        Them vao gio hang
+                      </div>
+                      <button className="rounded-sm bg-orange px-4 py-2 capitalize text-white hover:bg-opacity-80">
+                        Xem gio hang
+                      </button>
+                    </div>
+                  </div>
+                </div>
+              }
+            >
+              <Link to="/">
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  fill="none"
+                  viewBox="0 0 24 24"
+                  strokeWidth={1.5}
+                  stroke="currentColor"
+                  className="h-6 w-6"
+                >
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    d="M2.25 3h1.386c.51 0 .955.343 1.087.835l.383 1.437M7.5 14.25a3 3 0 00-3 3h15.75m-12.75-3h11.218c1.121-2.3 2.1-4.684 2.924-7.138a60.114 60.114 0 00-16.536-1.84M7.5 14.25L5.106 5.272M6 20.25a.75.75 0 11-1.5 0 .75.75 0 011.5 0zm12.75 0a.75.75 0 11-1.5 0 .75.75 0 011.5 0z"
+                  />
+                </svg>
+              </Link>
+            </Popover>
           </div>
         </div>
       </div>
