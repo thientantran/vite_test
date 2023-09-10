@@ -5,6 +5,7 @@ import React from "react";
 import { useForm } from "react-hook-form";
 import { Link } from "react-router-dom";
 
+import { isAxiosUnprocessableEntityError } from "../utils/checkError";
 import http from "../utils/http";
 import { schema } from "../utils/rules";
 
@@ -13,6 +14,7 @@ export default function Register() {
   const {
     register,
     handleSubmit,
+    setError,
     formState: { errors },
   } = useForm({
     resolver: yupResolver(schema),
@@ -27,6 +29,19 @@ export default function Register() {
     registerAccountMutation.mutate(body, {
       onSuccess: (data) => {
         console.log(data);
+      },
+      onError: (data) => {
+        if (isAxiosUnprocessableEntityError(data)) {
+          const formData = data.response?.data.data;
+          if (formData) {
+            Object.keys(formData).forEach((key) => {
+              setError(key, {
+                message: formData[key],
+                type: "server",
+              });
+            });
+          }
+        }
       },
     });
   });
