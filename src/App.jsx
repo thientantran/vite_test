@@ -1,7 +1,9 @@
 import "./App.css";
+import useRouteElements from "./hooks/useRouteElements";
 
 function App() {
-  return <h1 className="text-3xl font-bold underline">Hello world!</h1>;
+  const rootElements = useRouteElements();
+  return <div>{rootElements}</div>;
 }
 
 export default App;
