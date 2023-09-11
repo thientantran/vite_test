@@ -11,7 +11,7 @@ import http from "../utils/http";
 import { loginSchema } from "../utils/rules";
 const loginAccount = (body) => http.post("/login", body);
 export default function Login() {
-  const { setIsAuthenticated } = useContext(AppContext);
+  const { setIsAuthenticated, setProfile } = useContext(AppContext);
   const navigate = useNavigate();
   const {
     register,
@@ -28,6 +28,7 @@ export default function Login() {
     loginAccountMutation.mutate(data, {
       onSuccess: (data) => {
         setIsAuthenticated(true);
+        setProfile(data.data.data.user);
         navigate("/");
       },
       onError: (error) => {

@@ -13,7 +13,7 @@ import { schema } from "../utils/rules";
 
 const registerAccount = (body) => http.post("/register", body);
 export default function Register() {
-  const { setIsAuthenticated } = useContext(AppContext);
+  const { setIsAuthenticated, setProfile } = useContext(AppContext);
   const navigate = useNavigate();
   const {
     register,
@@ -33,6 +33,7 @@ export default function Register() {
     registerAccountMutation.mutate(body, {
       onSuccess: (data) => {
         setIsAuthenticated(true);
+        setProfile(data.data.data.user);
         navigate("/");
       },
       onError: (data) => {

@@ -2,18 +2,20 @@ import { useMutation } from "@tanstack/react-query";
 import React, { useContext } from "react";
 import { Link } from "react-router-dom";
 
-import Popover from "./Popover";
 import { AppContext } from "../context";
 import http from "../utils/http";
+import Popover from "./Popover";
 
 const logout = () => http.post("/logout");
 
 export default function Header() {
-  const { isAuthenticated, setIsAuthenticated } = useContext(AppContext);
+  const { isAuthenticated, setIsAuthenticated, profile, setProfile } =
+    useContext(AppContext);
   const logoutMutation = useMutation({
     mutationFn: logout,
     onSuccess: () => {
       setIsAuthenticated(false);
+      setProfile(null);
     },
   });
 
@@ -105,7 +107,7 @@ export default function Header() {
                 />
               </div>
 
-              <div>thientantm</div>
+              <div>{profile.email}</div>
             </Popover>
           ) : (
             <div className="flex items-center">

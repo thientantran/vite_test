@@ -2,9 +2,10 @@ import axios from "axios";
 import { toast } from "react-toastify";
 
 import {
-  clearAccessTokenFromLS,
+  clearLS,
   getAccessTokenFromLS,
   saveAccessTokenToLS,
+  setProfileToLS,
 } from "./auth";
 import HttpStatusCode from "./constants";
 
@@ -40,9 +41,10 @@ class Http {
         if (url === "/login" || url === "/register") {
           this.accessToken = response.data.data?.access_token;
           saveAccessTokenToLS(response.data.data?.access_token);
+          setProfileToLS(response.data.data.user);
         } else if (url === "/logout") {
           this.accessToken = "";
-          clearAccessTokenFromLS();
+          clearLS();
         }
         return response;
       },
