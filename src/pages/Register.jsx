@@ -6,6 +6,7 @@ import { useForm } from "react-hook-form";
 import { Link, useNavigate } from "react-router-dom";
 
 import Button from "../components/Button";
+import Input from "../components/Input";
 import { AppContext } from "../context";
 import { isAxiosUnprocessableEntityError } from "../utils/checkError";
 import http from "../utils/http";
@@ -62,39 +63,31 @@ export default function Register() {
               onSubmit={onSubmit}
             >
               <div className="text-2xl">Dang Ky</div>
-              <div className="mt-8">
-                <input
-                  type="email"
-                  {...register("email")}
-                  placeholder="Email"
-                  className="w-full rounded-sm border border-gray-300 outline-none focus:border-gray-500 focus:shadow-sm p-3"
-                />
-                <div className="text-sm min-h-[1rem] text-red-600 mt-1">
-                  {errors?.email?.message}
-                </div>
-              </div>
-              <div className="mt-2">
-                <input
-                  type="password"
-                  {...register("password")}
-                  placeholder="Password"
-                  className="w-full rounded-sm border border-gray-300 outline-none focus:border-gray-500 focus:shadow-sm p-3"
-                />
-                <div className="text-sm min-h-[1rem] text-red-600 mt-1">
-                  {errors?.password?.message}
-                </div>
-              </div>
-              <div className="mt-2">
-                <input
-                  type="password"
-                  {...register("confirm_password")}
-                  placeholder="Confirm Password"
-                  className="w-full rounded-sm border border-gray-300 outline-none focus:border-gray-500 focus:shadow-sm p-3"
-                />
-                <div className="text-sm min-h-[1rem] text-red-600 mt-1">
-                  {errors?.confirm_password?.message}
-                </div>
-              </div>
+
+              <Input
+                className="mt-8"
+                register={register}
+                type="email"
+                name="email"
+                placeholder="Email"
+                errorMessage={errors?.email?.message}
+              />
+              <Input
+                className="mt-2"
+                register={register}
+                type="password"
+                name="password"
+                placeholder="Password"
+                errorMessage={errors?.password?.message}
+              />
+              <Input
+                className="mt-2"
+                register={register}
+                type="password"
+                name="confirm_password"
+                placeholder="Confirm Password"
+                errorMessage={errors?.confirm_password?.message}
+              />
               <div className="mt-2">
                 <Button
                   isLoading={registerAccountMutation.isLoading}

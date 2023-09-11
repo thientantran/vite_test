@@ -5,6 +5,7 @@ import { useForm } from "react-hook-form";
 import { Link, useNavigate } from "react-router-dom";
 
 import Button from "../components/Button";
+import Input from "../components/Input";
 import { AppContext } from "../context";
 import { isAxiosUnprocessableEntityError } from "../utils/checkError";
 import http from "../utils/http";
@@ -57,28 +58,22 @@ export default function Login() {
               onSubmit={onSubmit}
             >
               <div className="text-2xl">Dang Nhap</div>
-              <div className="mt-8">
-                <input
-                  type="email"
-                  {...register("email")}
-                  placeholder="Email"
-                  className="w-full p-3 rounded-sm border border-gray-300 outline-none focus:border-gray-500 focus:shadow-sm"
-                />
-                <div className="mt-1 min-h-[1rem] text-red-600 text-sm">
-                  {errors?.email?.message}
-                </div>
-              </div>
-              <div className="mt-2">
-                <input
-                  type="password"
-                  {...register("password")}
-                  placeholder="Password"
-                  className="w-full p-3 rounded-sm border border-gray-300 outline-none focus:border-gray-500 focus:shadow-sm"
-                />
-                <div className="mt-1 min-h-[1rem] text-red-600 text-sm">
-                  {errors?.password?.message}
-                </div>
-              </div>
+              <Input
+                className="mt-8"
+                register={register}
+                type="email"
+                name="email"
+                placeholder="Email"
+                errorMessage={errors?.email?.message}
+              />
+              <Input
+                className="mt-2"
+                register={register}
+                type="password"
+                name="password"
+                placeholder="Password"
+                errorMessage={errors?.password?.message}
+              />
               <div className="mt-2">
                 <Button
                   type="submit"
