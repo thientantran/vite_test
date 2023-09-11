@@ -5,6 +5,7 @@ import React, { useContext } from "react";
 import { useForm } from "react-hook-form";
 import { Link, useNavigate } from "react-router-dom";
 
+import Button from "../components/Button";
 import { AppContext } from "../context";
 import { isAxiosUnprocessableEntityError } from "../utils/checkError";
 import http from "../utils/http";
@@ -94,9 +95,13 @@ export default function Register() {
                 </div>
               </div>
               <div className="mt-2">
-                <button className="w-full bg-red-500 text-center text-white uppercase py-3 rounded-sm hover:bg-red-600">
-                  dang ky
-                </button>
+                <Button
+                  isLoading={registerAccountMutation.isLoading}
+                  disabled={registerAccountMutation.isLoading}
+                  className="w-full bg-red-500 text-center text-white uppercase py-3 rounded-sm hover:bg-red-600 flex justify-center items-center"
+                >
+                  Đăng ký
+                </Button>
               </div>
               <div className="mt-8 text-center">
                 <span className="text-gray-300">Ban da co tai khoan? </span>

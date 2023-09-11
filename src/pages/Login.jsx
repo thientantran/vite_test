@@ -4,6 +4,7 @@ import React, { useContext } from "react";
 import { useForm } from "react-hook-form";
 import { Link, useNavigate } from "react-router-dom";
 
+import Button from "../components/Button";
 import { AppContext } from "../context";
 import { isAxiosUnprocessableEntityError } from "../utils/checkError";
 import http from "../utils/http";
@@ -78,9 +79,14 @@ export default function Login() {
                 </div>
               </div>
               <div className="mt-2">
-                <button className="bg-red-500 text-white text-center w-full uppercase py-3 hover:bg-red-600">
-                  Dang nhap
-                </button>
+                <Button
+                  type="submit"
+                  isLoading={loginAccountMutation.isLoading}
+                  disabled={loginAccountMutation.isLoading}
+                  className="flex items-center justify-center bg-red-500 text-white text-center w-full uppercase py-3 hover:bg-red-600"
+                >
+                  Đăng Nhập
+                </Button>
               </div>
               <div className="mt-8 text-center">
                 <span className="text-gray-400">Ban chua co tai khoan? </span>
