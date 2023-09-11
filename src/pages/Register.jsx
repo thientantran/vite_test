@@ -1,16 +1,19 @@
 import { yupResolver } from "@hookform/resolvers/yup";
 import { useMutation } from "@tanstack/react-query";
 import { omit } from "lodash";
-import React from "react";
+import React, { useContext } from "react";
 import { useForm } from "react-hook-form";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 
+import { AppContext } from "../context";
 import { isAxiosUnprocessableEntityError } from "../utils/checkError";
 import http from "../utils/http";
 import { schema } from "../utils/rules";
 
 const registerAccount = (body) => http.post("/register", body);
 export default function Register() {
+  const { setIsAuthenticated } = useContext(AppContext);
+  const navigate = useNavigate();
   const {
     register,
     handleSubmit,
@@ -28,7 +31,8 @@ export default function Register() {
     const body = omit(data, ["confirm_password"]);
     registerAccountMutation.mutate(body, {
       onSuccess: (data) => {
-        console.log(data);
+        setIsAuthenticated(true);
+        navigate("/");
       },
       onError: (data) => {
         if (isAxiosUnprocessableEntityError(data)) {

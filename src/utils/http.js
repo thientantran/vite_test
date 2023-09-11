@@ -1,11 +1,18 @@
 import axios from "axios";
 import { toast } from "react-toastify";
 
+import {
+  clearAccessTokenFromLS,
+  getAccessTokenFromLS,
+  saveAccessTokenToLS,
+} from "./auth";
 import HttpStatusCode from "./constants";
 
 class Http {
   instance;
+  accessToken;
   constructor() {
+    this.accessToken = getAccessTokenFromLS();
     this.instance = axios.create({
       baseURL: "https://api-ecom.duthanhduoc.com/",
       timeout: 10000,
@@ -13,8 +20,30 @@ class Http {
         "Content-Type": "application/json",
       },
     });
+    // khi gửi request thì add thêm accessToken vào để gửi lên server
+    this.instance.interceptors.request.use(
+      (config) => {
+        if (this.accessToken && config.headers) {
+          config.headers.authorization = this.accessToken;
+          return config;
+        }
+        return config;
+      },
+      (error) => {
+        return Promise.reject(error);
+      },
+    );
     this.instance.interceptors.response.use(
-      function (response) {
+      (response) => {
+        // setup response lưu access_token
+        const { url } = response.config;
+        if (url === "/login" || url === "/register") {
+          this.accessToken = response.data.data?.access_token;
+          saveAccessTokenToLS(response.data.data?.access_token);
+        } else if (url === "/logout") {
+          this.accessToken = "";
+          clearAccessTokenFromLS();
+        }
         return response;
       },
       function (error) {

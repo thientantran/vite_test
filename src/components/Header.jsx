@@ -1,9 +1,25 @@
-import React from "react";
+import { useMutation } from "@tanstack/react-query";
+import React, { useContext } from "react";
 import { Link } from "react-router-dom";
 
+import { AppContext } from "../context";
+import http from "../utils/http";
 import Popover from "./Popover";
 
+const logout = () => http.post("/logout");
+
 export default function Header() {
+  const { isAuthenticated, setIsAuthenticated } = useContext(AppContext);
+  const logoutMutation = useMutation({
+    mutationFn: logout,
+    onSuccess: () => {
+      setIsAuthenticated(false);
+    },
+  });
+
+  const handleLogout = () => {
+    logoutMutation.mutate();
+  };
   return (
     <div className="bg-[linear-gradient(-180deg,#f53d2d,#f63)] pb-5 pt-2 text-white">
       <div className="container">
@@ -55,38 +71,56 @@ export default function Header() {
               />
             </svg>
           </Popover>
-          <Popover
-            className="flex items-center ml-6 hover:text-gray-300 cursor-pointer"
-            renderPopover={
-              <div className="relative rounded-sm border border-gray-200 bg-white shadow-md">
-                <Link
-                  to="/profile"
-                  className="hover:bg-stale-100 block w-full bg-white px-4 py-3 text-left hover:text-cyan-500"
-                >
-                  Tai khoan cua toi
-                </Link>
-                <Link
-                  to="/"
-                  className="hover:bg-stale-100 block w-full bg-white px-4 py-3 text-left hover:text-cyan-500"
-                >
-                  Don mua
-                </Link>
-                <button className="hover:bg-stale-100 block w-full bg-white px-4 py-3 text-left hover:text-cyan-500">
-                  Dang xuat
-                </button>
+          {isAuthenticated ? (
+            <Popover
+              className="flex items-center ml-6 hover:text-gray-300 cursor-pointer"
+              renderPopover={
+                <div className="relative rounded-sm border border-gray-200 bg-white shadow-md">
+                  <Link
+                    to="/profile"
+                    className="hover:bg-stale-100 block w-full bg-white px-4 py-3 text-left hover:text-cyan-500"
+                  >
+                    Tai khoan cua toi
+                  </Link>
+                  <Link
+                    to="/"
+                    className="hover:bg-stale-100 block w-full bg-white px-4 py-3 text-left hover:text-cyan-500"
+                  >
+                    Don mua
+                  </Link>
+                  <button
+                    onClick={handleLogout}
+                    className="hover:bg-stale-100 block w-full bg-white px-4 py-3 text-left hover:text-cyan-500"
+                  >
+                    Dang xuat
+                  </button>
+                </div>
+              }
+            >
+              <div className="mr-2 w-8 h-8">
+                <img
+                  src="https://down-vn.img.susercontent.com/file/br-11134226-7qukw-levcx0zgr2n3d2_tn"
+                  alt="avatar"
+                  className="h-full w-full rounded-full object-cover"
+                />
               </div>
-            }
-          >
-            <div className="mr-2 w-8 h-8">
-              <img
-                src="https://down-vn.img.susercontent.com/file/br-11134226-7qukw-levcx0zgr2n3d2_tn"
-                alt="avatar"
-                className="h-full w-full rounded-full object-cover"
-              />
-            </div>
 
-            <div>thientantm</div>
-          </Popover>
+              <div>thientantm</div>
+            </Popover>
+          ) : (
+            <div className="flex items-center">
+              <Link to="/login" className="mx-3 capitalize hover:text-white/70">
+                Dang nhap
+              </Link>
+              <div className="h-4 border-r-[1px] border-r-white/40" />
+              <Link
+                to="/register"
+                className="mx-3 capitalize hover:text-white/70"
+              >
+                Dang ky
+              </Link>
+            </div>
+          )}
         </div>
         {/* Row 2 */}
         <div className="grid grid-cols-12 gap-4 mt-2">

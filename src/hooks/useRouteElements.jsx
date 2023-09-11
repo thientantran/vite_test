@@ -56,19 +56,13 @@ export default function useRouteElements() {
       ],
     },
     {
-      path: "",
-      element: <ProtectedRoute />,
-      children: [
-        {
-          path: "/",
-          index: true,
-          element: (
-            <MainLayout>
-              <Products />
-            </MainLayout>
-          ),
-        },
-      ],
+      path: "/",
+      index: true,
+      element: (
+        <MainLayout>
+          <Products />
+        </MainLayout>
+      ),
     },
   ]);
   return useRouteElements;
