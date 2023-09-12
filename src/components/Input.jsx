@@ -8,18 +8,19 @@ export default function Input({
   register,
   errorMessage,
   className,
+  classNameInput = "w-full p-3 rounded-sm border border-gray-300 outline-none focus:border-gray-500 focus:shadow-sm",
+  classNameError = "mt-1 min-h-[1rem] text-red-600 text-sm",
 }) {
+  const registerInput = register && name ? register(name) : {};
   return (
     <div className={className}>
       <input
         type={type}
-        {...register(name)}
+        {...registerInput}
         placeholder={placeholder}
-        className="w-full p-3 rounded-sm border border-gray-300 outline-none focus:border-gray-500 focus:shadow-sm"
+        className={classNameInput}
       />
-      <div className="mt-1 min-h-[1rem] text-red-600 text-sm">
-        {errorMessage}
-      </div>
+      <div className={classNameError}>{errorMessage}</div>
     </div>
   );
 }
