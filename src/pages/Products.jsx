@@ -1,14 +1,16 @@
 import { useQuery } from "@tanstack/react-query";
-import React from "react";
+import React, { useState } from "react";
 
 import { productApi } from "../apis/api";
 import AsideFilter from "../components/AsideFilter";
+import Pagination from "../components/Pagination";
 import Product from "../components/Product";
 import SortProductList from "../components/SortProductList";
 import useQueryParams from "../hooks/useQueryParams";
 
 export default function Products() {
   const queryParams = useQueryParams();
+  const [page, setPage] = useState(1);
   const { data } = useQuery({
     queryKey: ["products", queryParams],
     queryFn: () => {
@@ -33,6 +35,7 @@ export default function Products() {
                   </div>
                 ))}
             </div>
+            <Pagination pageSize={20} page={page} setPage={setPage} />
           </div>
         </div>
       </div>
