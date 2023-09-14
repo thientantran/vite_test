@@ -1,5 +1,6 @@
 import { useQuery } from "@tanstack/react-query";
-import React, { useState } from "react";
+import { isUndefined, omitBy } from "lodash";
+import React from "react";
 
 import { productApi } from "../apis/api";
 import AsideFilter from "../components/AsideFilter";
@@ -10,11 +11,24 @@ import useQueryParams from "../hooks/useQueryParams";
 
 export default function Products() {
   const queryParams = useQueryParams();
-  const [page, setPage] = useState(1);
+  const queryConfig = omitBy(
+    {
+      page: queryParams.page || "1",
+      limit: queryParams.limit || 20,
+      sort_by: queryParams.sort_by,
+      exclude: queryParams.exclude,
+      name: queryParams.name,
+      order: queryParams.name,
+      price_max: queryParams.price_max,
+      price_min: queryParams.price_min,
+      rating_filter: queryParams.rating_filter,
+    },
+    isUndefined,
+  );
   const { data } = useQuery({
-    queryKey: ["products", queryParams],
+    queryKey: ["products", queryConfig],
     queryFn: () => {
-      return productApi.getProducts(queryParams);
+      return productApi.getProducts(queryConfig);
     },
   });
 
@@ -35,7 +49,7 @@ export default function Products() {
                   </div>
                 ))}
             </div>
-            <Pagination pageSize={20} page={page} setPage={setPage} />
+            <Pagination pageSize={20} queryConfig={queryConfig} />
           </div>
         </div>
       </div>
