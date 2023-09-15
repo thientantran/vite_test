@@ -1,26 +1,101 @@
+/* eslint-disable react/prop-types */
+import classNames from "classnames";
+import { omit } from "lodash";
 import React from "react";
+import { createSearchParams, useNavigate } from "react-router-dom";
 
-export default function SortProductList() {
+import { sortBy } from "../utils/constants";
+
+export default function SortProductList({ queryConfig }) {
+  const { sort_by = sortBy.createdAt, order } = queryConfig;
+  const navigate = useNavigate();
+  const isActiveSortBy = (sortByValue) => {
+    return sort_by === sortByValue;
+  };
+
+  const handleSort = (sortByValue) => {
+    navigate({
+      pathname: "/",
+      search: createSearchParams(
+        omit(
+          {
+            ...queryConfig,
+            sort_by: sortByValue,
+          },
+          ["order"],
+        ),
+      ).toString(),
+    });
+  };
+  const handlePriceOrder = (orderValue) => {
+    navigate({
+      pathname: "/",
+      search: createSearchParams({
+        ...queryConfig,
+        sort_by: sortBy.price,
+        order: orderValue,
+      }).toString(),
+    });
+  };
   return (
     <div className="bg-gray-300/40 px-3 py-4">
       <div className="flex items-center justify-between gap-2">
         <div className="flex items-center gap-2">
           <div>Sap xep theo</div>
-          <button className="bg-orange px-4 h-8 text-sm rounded-sm text-white hover:bg-orange/80">
+          <button
+            className={classNames(
+              " px-4 h-8 text-sm rounded-sm hover:bg-orange/80",
+              {
+                "bg-orange  text-white": isActiveSortBy(sortBy.view),
+                "bg-white text-black": !isActiveSortBy(sortBy.view),
+              },
+            )}
+            onClick={() => handleSort(sortBy.view)}
+          >
             Pho bien
           </button>
-          <button className="bg-white px-4 h-8 text-sm rounded-sm text-black hover:bg-orange/80">
+          <button
+            className={classNames(
+              " px-4 h-8 text-sm rounded-sm hover:bg-orange/80",
+              {
+                "bg-orange  text-white": isActiveSortBy(sortBy.createdAt),
+                "bg-white text-black": !isActiveSortBy(sortBy.createdAt),
+              },
+            )}
+            onClick={() => handleSort(sortBy.createdAt)}
+          >
             Moi nhat
           </button>
-          <button className="bg-white px-4 h-8 text-sm rounded-sm text-black hover:bg-orange/80">
+          <button
+            className={classNames(
+              " px-4 h-8 text-sm rounded-sm hover:bg-orange/80",
+              {
+                "bg-orange  text-white": isActiveSortBy(sortBy.sold),
+                "bg-white text-black": !isActiveSortBy(sortBy.sold),
+              },
+            )}
+            onClick={() => handleSort(sortBy.sold)}
+          >
             Ban chay
           </button>
-          <select className="h-8 cursor-pointer text-black outline-none capitalize text-left text-sm bg-white px-4 hover:bg-slate-100">
+          <select
+            className={classNames(
+              "h-8 cursor-pointer outline-none capitalize text-left text-sm px-4 hover:bg-orange/80",
+              {
+                "bg-orange text-white": isActiveSortBy(sortBy.price),
+                "bg-white text-black": !isActiveSortBy(sortBy.price),
+              },
+            )}
+            value={order || ""}
+            onChange={(event) => {
+              handlePriceOrder(event.target.value);
+            }}
+          >
             <option value="" disabled>
               Gia
             </option>
-            <option value="price:asc">Gia: Thap den cao</option>
-            <option value="price:desc">Gia: Cao den thap</option>
+            <option value="asc">Gia: Thap den cao</option>
+            <option value="desc">Gia: Cao den thap</option>
           </select>
         </div>
         <div className="flex items-center">
