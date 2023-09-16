@@ -2,6 +2,7 @@ import http from "../utils/http";
 
 const URL = {
   products: "products",
+  categories: "categories",
 };
 
 export const productApi = {
@@ -10,5 +11,11 @@ export const productApi = {
   },
   getProductDetail(id) {
     return http.get(`${URL}/${id}`);
+  },
+};
+
+export const categoryApi = {
+  getCategories() {
+    return http.get(URL.categories);
   },
 };
