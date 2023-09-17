@@ -1,5 +1,13 @@
 import * as yup from "yup";
 
+function testPriceMinMax() {
+  const { price_min, price_max } = this.parent;
+  if (price_min !== "" && price_max !== "") {
+    return Number(price_max) >= Number(price_min);
+  }
+  return price_min !== "" || price_max !== "";
+}
+
 export const schema = yup.object({
   email: yup
     .string()
@@ -18,6 +26,24 @@ export const schema = yup.object({
     .min(6, "Do dai tu 6-150 ky tu")
     .max(150, "Do dai tu 6-150 ky tu")
     .oneOf([yup.ref("password")], "Password khong trung hop"),
+  price_min: yup.string().test({
+    name: "price-not-allowerd",
+    message: "Giá không phù hợp",
+    test: testPriceMinMax,
+  }),
+  price_max: yup.string().test({
+    name: "price-not-allowerd",
+    message: "Giá không phù hợp",
+    test(value) {
+      const price_max = value;
+      const { price_min } = this.parent;
+      if (price_min !== "" && price_max !== "") {
+        return Number(price_max) >= Number(price_min);
+      }
+      return price_min !== "" || price_max !== "";
+    },
+  }),
 });
 
 export const loginSchema = schema.omit(["confirm_password"]);
+export const priceSchema = schema.pick(["price_min", "price_max"]);
