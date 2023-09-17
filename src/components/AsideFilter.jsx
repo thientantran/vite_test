@@ -1,12 +1,21 @@
-import { Link } from "react-router-dom";
+/* eslint-disable react/prop-types */
+import classNames from "classnames";
+import { Link, createSearchParams } from "react-router-dom";
 
 import Button from "./Button";
 import Input from "./Input";
 
-export default function AsideFilter() {
+export default function AsideFilter({ queryConfig, categories }) {
+  const { category } = queryConfig;
+  console.log(category);
   return (
     <div className="py-4">
-      <Link to="/" className="flex items-center font-bold">
+      <Link
+        to="/"
+        className={classNames("flex items-center font-bold", {
+          "text-orange": !category,
+        })}
+      >
         <svg viewBox="0 0 12 10" className="mr-3 h-4 w-3 fill-current">
           <g fillRule="evenodd" stroke="none" strokeWidth={1}>
             <g transform="translate(-373 -208)">
@@ -25,22 +34,35 @@ export default function AsideFilter() {
       <div className="my-4 bg-gray-300 h-[1px]" />
 
       <ul>
-        <li className="py-2 pl-2">
-          <Link to="/" className="flex items-center font-semibold text-orange">
-            <svg viewBox="0 0 4 7" className="h-2 w-2 fill-orange">
-              <polygon points="4 3.5 0 0 0 7" />
-            </svg>
-            <div className="ml-2">Thoi trang nam</div>
-          </Link>
-        </li>
-        <li className="py-2 pl-2">
-          <Link to="/" className="flex items-center">
-            <svg viewBox="0 0 4 7" className="h-2 w-2">
-              <polygon points="4 3.5 0 0 0 7" />
-            </svg>
-            <div className="ml-2">Thoi trang nu</div>
-          </Link>
-        </li>
+        {categories.map((categoryItem) => {
+          const isActive = categoryItem._id === category;
+          return (
+            <li key={categoryItem._id} className="py-2 pl-2">
+              <Link
+                to={{
+                  pathname: "/",
+                  search: createSearchParams({
+                    ...queryConfig,
+                    category: categoryItem._id,
+                  }).toString(),
+                }}
+                className={classNames("flex items-center", {
+                  "text-orange font-semibold": isActive,
+                })}
+              >
+                <svg
+                  viewBox="0 0 4 7"
+                  className={classNames("h-2 w-", {
+                    "fill-orange": isActive,
+                  })}
+                >
+                  <polygon points="4 3.5 0 0 0 7" />
+                </svg>
+                <div className="ml-2">{categoryItem.name}</div>
+              </Link>
+            </li>
+          );
+        })}
       </ul>
       <Link to="/" className="flex items-center mt-4 uppercase font-bold">
         <svg
