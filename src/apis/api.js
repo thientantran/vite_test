@@ -10,7 +10,7 @@ export const productApi = {
     return http.get(URL.products, { params });
   },
   getProductDetail(id) {
-    return http.get(`${URL}/${id}`);
+    return http.get(`${URL.products}/${id}`);
   },
 };
 
