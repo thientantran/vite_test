@@ -14,3 +14,19 @@ export function formatNumberToSocialStyle(value) {
 
 export const rateSale = (original, sale) =>
   Math.round(((original - sale) / original) * 100) + "%";
+
+const removeSpecialCharacter = (str) => {
+  return str.replace(
+    /!|@|%|\^|\*|\(|\)|\+|\=|\<|\>|\?|\/|,|\.|\:|\;|\'|\"|\&|\#|\[|\]|~|\$|_|`|-|{|}|\||\\/g,
+    "",
+  );
+};
+
+export const generateNameId = ({ name, id }) => {
+  return removeSpecialCharacter(name).replace(/\s/g, "-") + `-i,${id}`;
+};
+
+export const getIdFromNameId = (nameId) => {
+  const arr = nameId.split("-i,");
+  return arr[arr.length - 1];
+};

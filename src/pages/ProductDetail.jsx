@@ -9,11 +9,13 @@ import Rating from "../components/Rating";
 import {
   formatCurrency,
   formatNumberToSocialStyle,
+  getIdFromNameId,
   rateSale,
 } from "../utils/functions";
 
 export default function ProductDetail() {
-  const { id } = useParams();
+  const { nameId } = useParams();
+  const id = getIdFromNameId(nameId);
   const { data: productDetailData } = useQuery({
     queryKey: ["product", id],
     queryFn: () => productApi.getProductDetail(id),

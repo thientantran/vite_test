@@ -1,12 +1,16 @@
 /* eslint-disable react/prop-types */
 import { Link } from "react-router-dom";
 
-import { formatCurrency, formatNumberToSocialStyle } from "../utils/functions";
+import {
+  formatCurrency,
+  formatNumberToSocialStyle,
+  generateNameId,
+} from "../utils/functions";
 import Rating from "./Rating";
 
 export default function Product({ product }) {
   return (
-    <Link to={`/${product._id}`}>
+    <Link to={`/${generateNameId({ name: product.name, id: product._id })}`}>
       <div className="rounded-sm bg-white shadow transition-transform duration-100 hover:translate-y-[-0.04rem] hover:shadow-md">
         <div className="relative w-full pt-[100%]">
           <img
