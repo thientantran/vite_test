@@ -1,14 +1,26 @@
+import { yupResolver } from "@hookform/resolvers/yup";
 import { useMutation } from "@tanstack/react-query";
+import { omit } from "lodash";
 import React, { useContext } from "react";
-import { Link } from "react-router-dom";
+import { useForm } from "react-hook-form";
+import { Link, createSearchParams, useNavigate } from "react-router-dom";
 
-import Popover from "./Popover";
 import { AppContext } from "../context";
+import useQueryConfig from "../hooks/useQueryConfig";
 import http from "../utils/http";
+import { nameSchema } from "../utils/rules";
+import Popover from "./Popover";
 
 const logout = () => http.post("/logout");
 
 export default function Header() {
+  const queryConfig = useQueryConfig();
+  const { register, handleSubmit } = useForm({
+    defaultValues: {
+      name: "",
+    },
+    resolver: yupResolver(nameSchema),
+  });
   const { isAuthenticated, setIsAuthenticated, profile, setProfile } =
     useContext(AppContext);
   const logoutMutation = useMutation({
@@ -22,6 +34,23 @@ export default function Header() {
   const handleLogout = () => {
     logoutMutation.mutate();
   };
+
+  const navigate = useNavigate();
+  const onSubmitSearch = handleSubmit((data) => {
+    const config = queryConfig.order
+      ? omit(
+          {
+            ...queryConfig,
+            name: data.name,
+          },
+          ["order", "sort_by"],
+        )
+      : { ...queryConfig, name: data.name };
+    navigate({
+      pathname: "/",
+      search: createSearchParams(config).toString(),
+    });
+  });
   return (
     <div className="bg-[linear-gradient(-180deg,#f53d2d,#f63)] pb-5 pt-2 text-white">
       <div className="container">
@@ -136,11 +165,11 @@ export default function Header() {
             </Link>
           </div>
           <div className="col-span-9 bg-white rounded-sm p-1">
-            <form>
+            <form onSubmit={onSubmitSearch}>
               <div className="flex">
                 <input
                   type="text"
-                  name="search"
+                  {...register("name")}
                   placeholder="Searching...."
                   className="border-none outline-none flex-grow text-black px-3 py-2"
                 />

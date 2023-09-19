@@ -43,7 +43,9 @@ export const schema = yup.object({
       return price_min !== "" || price_max !== "";
     },
   }),
+  name: yup.string().trim().required("Tên sản phẩm là bắt buộc!"),
 });
 
 export const loginSchema = schema.omit(["confirm_password"]);
 export const priceSchema = schema.pick(["price_min", "price_max"]);
+export const nameSchema = schema.pick(["name"]);

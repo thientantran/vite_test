@@ -88,10 +88,15 @@ export default function AsideFilter({ queryConfig, categories }) {
               <Link
                 to={{
                   pathname: "/",
-                  search: createSearchParams({
-                    ...queryConfig,
-                    category: categoryItem._id,
-                  }).toString(),
+                  search: createSearchParams(
+                    omit(
+                      {
+                        ...queryConfig,
+                        category: categoryItem._id,
+                      },
+                      ["name"],
+                    ),
+                  ).toString(),
                 }}
                 className={classNames("flex items-center", {
                   "text-orange font-semibold": isActive,
