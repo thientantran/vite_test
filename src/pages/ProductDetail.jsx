@@ -1,6 +1,6 @@
 import { useQuery } from "@tanstack/react-query";
 import DOMPurify from "dompurify";
-import React from "react";
+import React, { useEffect, useMemo, useState } from "react";
 import { useParams } from "react-router-dom";
 
 import { productApi } from "../apis/api";
@@ -18,10 +18,40 @@ export default function ProductDetail() {
     queryKey: ["product", id],
     queryFn: () => productApi.getProductDetail(id),
   });
+  const [currentIndexImages, setCurrentIndexImages] = useState([0, 5]);
+  // là 1 array 2 chữ số, để dùng cho slice ở dưới
   const product = productDetailData?.data.data;
+  // use memo được sử dụng để tôi ưu performance của react component, khi những giúp ko chạy lại những functiond, và chỉ chạy lại khi có 1 parameter thay đổi
+  const currentImages = useMemo(
+    () => (product ? product.images.slice(...currentIndexImages) : []),
+    [product, currentIndexImages],
+  );
+
+  // chọn bức hình để làm main image
+  const [activeImage, setActiveImage] = useState("");
+  useEffect(() => {
+    if (product && product.images.length > 0) {
+      setActiveImage(product.images[0]);
+    }
+  }, [product]);
+
+  const next = () => {
+    if (currentIndexImages[1] < product.images.length) {
+      setCurrentIndexImages((prev) => [prev[0] + 1, prev[1] + 1]);
+    }
+  };
+  const prev = () => {
+    if (currentIndexImages[0] > 0) {
+      setCurrentIndexImages((prev) => [prev[0] - 1, prev[1] - 1]);
+    }
+  };
+  const chooseActive = (img) => {
+    setActiveImage(img);
+  };
   if (!product) {
     return null;
   }
+
   return (
     <div className="bg-gray-200 py-6">
       <div className="container">
@@ -31,14 +61,17 @@ export default function ProductDetail() {
             <div className="col-span-5">
               <div className="relative w-full pt-[100%] shadow">
                 <img
-                  src={product.image}
+                  src={activeImage}
                   alt={product.image}
                   className="absolute left-0 top-0 h-full w-full bg-white object-cover"
                 />
               </div>
               <div className="relative grid grid-cols-5 gap-1">
                 {/* chỗ này phải để relative và absolute vì nút button sẽ đè lên các hình, và click vào */}
-                <button className="absolute left-0 top-1/2 z-10 -translate-y-1/2 h-9 w-5 bg-black/20 text-white">
+                <button
+                  onClick={prev}
+                  className="absolute left-0 top-1/2 z-10 -translate-y-1/2 h-9 w-5 bg-black/20 text-white"
+                >
                   <svg
                     xmlns="http://www.w3.org/2000/svg"
                     fill="none"
@@ -54,12 +87,16 @@ export default function ProductDetail() {
                     />
                   </svg>
                 </button>
-                {product.images.slice(0, 5).map((img, index) => {
-                  const isActive = index === 0;
+                {currentImages.map((img, index) => {
+                  const isActive = img === activeImage;
                   return (
-                    <div className="relative w-full" key={img}>
+                    <div
+                      className="relative w-full cursor-pointer"
+                      key={img}
+                      onMouseEnter={() => chooseActive(img)}
+                    >
                       <img
-                        src={product.image}
+                        src={img}
                         alt={img}
                         className="abosulute left-0 top-0 h-full w-full cursor-pointer bg-white object-cover"
                       />
@@ -69,7 +106,10 @@ export default function ProductDetail() {
                     </div>
                   );
                 })}
-                <button className="absolute right-0 top-1/2 z-10 h-9 w-5 -translate-y-1/2 bg-black/20 text-white">
+                <button
+                  onClick={next}
+                  className="absolute right-0 top-1/2 z-10 h-9 w-5 -translate-y-1/2 bg-black/20 text-white"
+                >
                   <svg
                     xmlns="http://www.w3.org/2000/svg"
                     fill="none"
