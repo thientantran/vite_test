@@ -1,6 +1,6 @@
 import { useQuery } from "@tanstack/react-query";
 import DOMPurify from "dompurify";
-import React, { useEffect, useMemo, useState } from "react";
+import React, { useEffect, useMemo, useRef, useState } from "react";
 import { useParams } from "react-router-dom";
 
 import { productApi } from "../apis/api";
@@ -29,6 +29,7 @@ export default function ProductDetail() {
 
   // chọn bức hình để làm main image
   const [activeImage, setActiveImage] = useState("");
+  const imageRef = useRef(null);
   useEffect(() => {
     if (product && product.images.length > 0) {
       setActiveImage(product.images[0]);
@@ -48,6 +49,29 @@ export default function ProductDetail() {
   const chooseActive = (img) => {
     setActiveImage(img);
   };
+  const handleZoom = (event) => {
+    const rect = event.currentTarget.getBoundingClientRect();
+    // lấy chiều cao và chiều rộng của thẻ div chứa
+    const image = imageRef.current;
+    const { naturalHeight, naturalWidth } = image;
+    const { offsetX, offsetY } = event.nativeEvent;
+    // offsetX, offsetY là vị trí con trỏ theo toạ độ X, Y ở trong cái thẻ mà mình gắn function
+    // dùng cách lấy offset như trên thì phải giải quyết bubble event, còn nếu ko có thể dùng cách sau đây
+    // khi đó có thể xoá cái pointer-events-none
+    // const offsetX = event.pageX - (rect.x + window.scrollX)
+    // const offsetY = event.pageY - (rect.y + window.scrollY)
+    const top = offsetX * (1 - naturalHeight / rect.height);
+    const left = offsetY * (1 - naturalWidth / rect.width);
+    image.style.width = naturalWidth + "px";
+    image.style.height = naturalHeight + "px";
+    image.style.maxWidth = "unset";
+    image.style.top = top + "px";
+    image.style.left = left + "px";
+    // event bubble là khi hover vào thẻ con, cũng có nghĩ là đang hover vào thẻ cha, có thể gây sai sót
+  };
+  const handleRemoveZoom = () => {
+    imageRef.current?.removeAttribute("style");
+  };
   if (!product) {
     return null;
   }
@@ -59,11 +83,17 @@ export default function ProductDetail() {
           <div className="grid grid-cols-12 gap-9">
             {/* bên trái */}
             <div className="col-span-5">
-              <div className="relative w-full pt-[100%] shadow">
+              <div
+                className="relative w-full pt-[100%] shadow cursor-zoom-in overflow-hidden"
+                onMouseLeave={handleRemoveZoom}
+                onMouseMove={handleZoom}
+              >
                 <img
                   src={activeImage}
                   alt={product.image}
-                  className="absolute left-0 top-0 h-full w-full bg-white object-cover"
+                  className="absolute left-0 top-0 h-full w-full bg-white object-cover pointer-events-none"
+                  ref={imageRef}
+                  // pointer-events-none để không bị event bubble, (là khi hover vào thẻ con, cũng có nghĩa là thẻ cha, có thể gây sai số)
                 />
               </div>
               <div className="relative grid grid-cols-5 gap-1">
