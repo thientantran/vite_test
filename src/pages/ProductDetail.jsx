@@ -4,8 +4,8 @@ import React, { useEffect, useMemo, useRef, useState } from "react";
 import { useParams } from "react-router-dom";
 
 import { productApi } from "../apis/api";
-import InputNumber from "../components/InputNumber";
 import Product from "../components/Product";
+import QuantityController from "../components/QuantityController";
 import Rating from "../components/Rating";
 import {
   formatCurrency,
@@ -15,6 +15,7 @@ import {
 } from "../utils/functions";
 
 export default function ProductDetail() {
+  const [buyCount, setBuyCount] = useState(1);
   const { nameId } = useParams();
   const id = getIdFromNameId(nameId);
   const { data: productDetailData } = useQuery({
@@ -90,6 +91,9 @@ export default function ProductDetail() {
   };
   const handleRemoveZoom = () => {
     imageRef.current?.removeAttribute("style");
+  };
+  const handleBuyCount = (value) => {
+    setBuyCount(value);
   };
   if (!product) {
     return null;
@@ -207,46 +211,13 @@ export default function ProductDetail() {
               {/* Nhap so luong mua */}
               <div className="mt-8 flex items-center">
                 <div className="capitalize text-gray-500">Số lượng</div>
-                <div className="ml-10 flex items-center">
-                  <button className="flex items-center h-8 w-8 justify-center rounded-l-sm border border-gray-300 text-gray-600">
-                    <svg
-                      xmlns="http://www.w3.org/2000/svg"
-                      fill="none"
-                      viewBox="0 0 24 24"
-                      strokeWidth={1.5}
-                      stroke="currentColor"
-                      className="h-4 w-4"
-                    >
-                      <path
-                        strokeLinecap="round"
-                        strokeLinejoin="round"
-                        d="M19.5 12h-15"
-                      />
-                    </svg>
-                  </button>
-                  <InputNumber
-                    className=""
-                    classNameError="hidden"
-                    value={1}
-                    classNameInput="h-8 w-14 border-t border-b border-gray-300 p-1 text-center outline-none"
-                  />
-                  <button className="flex items-center h-8 w-8 justify-center rounded-l-sm border border-gray-300 text-gray-600">
-                    <svg
-                      xmlns="http://www.w3.org/2000/svg"
-                      fill="none"
-                      viewBox="0 0 24 24"
-                      strokeWidth={1.5}
-                      stroke="currentColor"
-                      className="h-4 w-4"
-                    >
-                      <path
-                        strokeLinecap="round"
-                        strokeLinejoin="round"
-                        d="M12 4.5v15m7.5-7.5h-15"
-                      />
-                    </svg>
-                  </button>
-                </div>
+                <QuantityController
+                  value={buyCount}
+                  max={product.quantity}
+                  onDecrease={handleBuyCount}
+                  onIncrease={handleBuyCount}
+                  onType={handleBuyCount}
+                />
                 <div className="ml-6 text-sm text-gray-500">
                   {product.quantity} sản phẩm có sẵn
                 </div>
