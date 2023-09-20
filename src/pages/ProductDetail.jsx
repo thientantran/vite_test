@@ -1,12 +1,14 @@
-import { useQuery } from "@tanstack/react-query";
+import { useMutation, useQuery } from "@tanstack/react-query";
 import DOMPurify from "dompurify";
 import React, { useEffect, useMemo, useRef, useState } from "react";
 import { useParams } from "react-router-dom";
 
-import { productApi } from "../apis/api";
+import { productApi, purchaseApi } from "../apis/api";
 import Product from "../components/Product";
 import QuantityController from "../components/QuantityController";
 import Rating from "../components/Rating";
+import { queryClient } from "../main";
+import { purchaseStatus } from "../utils/constants";
 import {
   formatCurrency,
   formatNumberToSocialStyle,
@@ -46,6 +48,8 @@ export default function ProductDetail() {
     enabled: Boolean(product),
     // chỉ gọi api khi mà có product, ko có thì ko gọi api này
   });
+
+  const addToCartMutation = useMutation(purchaseApi.addToCar);
 
   // chọn bức hình để làm main image
   const [activeImage, setActiveImage] = useState("");
@@ -94,6 +98,18 @@ export default function ProductDetail() {
   };
   const handleBuyCount = (value) => {
     setBuyCount(value);
+  };
+  const addToCart = () => {
+    addToCartMutation.mutate(
+      { buy_count: buyCount, product_id: product?._id },
+      {
+        onSuccess: () => {
+          queryClient.invalidateQueries({
+            queryKey: ["purchases", { status: purchaseStatus.inCart }],
+          });
+        },
+      },
+    );
   };
   if (!product) {
     return null;
@@ -224,7 +240,10 @@ export default function ProductDetail() {
               </div>
               {/* Đặt mua */}
               <div className="mt-8 flex items-center">
-                <button className="flex h-12 items-center justify-center rounded-sm border border-orange bg-orange/10 px-5 capitalize text-orange shadow-sm hover:bg-orange/5">
+                <button
+                  onClick={addToCart}
+                  className="flex h-12 items-center justify-center rounded-sm border border-orange bg-orange/10 px-5 capitalize text-orange shadow-sm hover:bg-orange/5"
+                >
                   <svg
                     enableBackground="new 0 0 15 15"
                     viewBox="0 0 15 15"

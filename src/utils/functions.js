@@ -17,6 +17,7 @@ export const rateSale = (original, sale) =>
 
 const removeSpecialCharacter = (str) => {
   return str.replace(
+    // eslint-disable-next-line no-useless-escape
     /!|@|%|\^|\*|\(|\)|\+|\=|\<|\>|\?|\/|,|\.|\:|\;|\'|\"|\&|\#|\[|\]|~|\$|_|`|-|{|}|\||\\/g,
     "",
   );
