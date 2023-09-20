@@ -36,6 +36,7 @@ export default function Header() {
   // trừ trường hợp, logout, rồi vào register, rồi login rồi nhảy vào lại
   // các query ko bị inactive => ko bị gọi lại => ko cần thiết set stale time
   // ddo đó khi thêm giỏ hàng thì nó sẽ ko có cập nhật giỏ hàng, vì ko có call api
+  // do đó phải invalidatequeries của purchasesInCart khi addToCart (ở product Detail), để cái này nó tự gọi lại mỗi khi addToCart
   const { data: purchasesInCartData } = useQuery({
     queryKey: ["purchases", { status: purchaseStatus.inCart }],
     queryFn: () => purchaseApi.getPurchases({ status: purchaseStatus.inCart }),
