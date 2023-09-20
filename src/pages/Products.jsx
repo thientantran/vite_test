@@ -15,6 +15,8 @@ export default function Products() {
     queryFn: () => {
       return productApi.getProducts(queryConfig);
     },
+    keepPreviousData: true,
+    staleTime: 3 * 60 * 1000,
   });
 
   const { data: categoriesData } = useQuery({
@@ -23,7 +25,6 @@ export default function Products() {
       return categoryApi.getCategories();
     },
   });
-  console.log(categoriesData);
   return (
     <div className="bg-gray-200 py-6">
       <div className="container">

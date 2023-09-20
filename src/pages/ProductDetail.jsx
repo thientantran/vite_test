@@ -5,6 +5,7 @@ import { useParams } from "react-router-dom";
 
 import { productApi } from "../apis/api";
 import InputNumber from "../components/InputNumber";
+import Product from "../components/Product";
 import Rating from "../components/Rating";
 import {
   formatCurrency,
@@ -28,6 +29,22 @@ export default function ProductDetail() {
     () => (product ? product.images.slice(...currentIndexImages) : []),
     [product, currentIndexImages],
   );
+  const queryConfig = {
+    limit: "20",
+    page: "1",
+    category: product?.category._id,
+  };
+
+  const { data: productsData } = useQuery({
+    queryKey: ["products", queryConfig],
+    queryFn: () => {
+      return productApi.getProducts(queryConfig);
+    },
+    staleTime: 3 * 60 * 1000,
+    // phải set stale time bằng cái product list, vì nếu ko set thì là 0, thì lần 2 gọi sẽ tiếp tục gọi API, do đó để ở cái này ko cần gọi lại nên phải set lại staletime
+    enabled: Boolean(product),
+    // chỉ gọi api khi mà có product, ko có thì ko gọi api này
+  });
 
   // chọn bức hình để làm main image
   const [activeImage, setActiveImage] = useState("");
@@ -300,6 +317,20 @@ export default function ProductDetail() {
               }}
             />
           </div>
+        </div>
+      </div>
+      <div className="mt-8">
+        <div className="container">
+          <div className="uppercase text-gray-400">Có thể bạn cũng thích</div>
+          {productsData && (
+            <div className="mt-6 grid grid-cols-2 gap-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6">
+              {productsData.data.data.products.map((product) => (
+                <div className="col-span-1" key={product._id}>
+                  <Product product={product} />
+                </div>
+              ))}
+            </div>
+          )}
         </div>
       </div>
     </div>
