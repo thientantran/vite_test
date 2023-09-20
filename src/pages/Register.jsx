@@ -10,7 +10,7 @@ import Input from "../components/Input";
 import { AppContext } from "../context";
 import { isAxiosUnprocessableEntityError } from "../utils/checkError";
 import http from "../utils/http";
-import { schema } from "../utils/rules";
+import { registerSchema } from "../utils/rules";
 
 const registerAccount = (body) => http.post("/register", body);
 export default function Register() {
@@ -22,7 +22,7 @@ export default function Register() {
     setError,
     formState: { errors },
   } = useForm({
-    resolver: yupResolver(schema),
+    resolver: yupResolver(registerSchema),
   });
 
   const registerAccountMutation = useMutation({

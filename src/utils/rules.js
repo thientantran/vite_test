@@ -46,6 +46,11 @@ export const schema = yup.object({
   name: yup.string().trim().required("Tên sản phẩm là bắt buộc!"),
 });
 
-export const loginSchema = schema.omit(["confirm_password"]);
+export const loginSchema = schema.pick(["email", "password"]);
+export const registerSchema = schema.pick([
+  "email",
+  "password",
+  "confirm_password",
+]);
 export const priceSchema = schema.pick(["price_min", "price_max"]);
 export const nameSchema = schema.pick(["name"]);
