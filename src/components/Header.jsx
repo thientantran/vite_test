@@ -1,16 +1,18 @@
 import { yupResolver } from "@hookform/resolvers/yup";
-import { useMutation } from "@tanstack/react-query";
+import { useMutation, useQuery } from "@tanstack/react-query";
 import { omit } from "lodash";
 import React, { useContext } from "react";
 import { useForm } from "react-hook-form";
 import { Link, createSearchParams, useNavigate } from "react-router-dom";
 
+import { purchaseApi } from "../apis/api";
 import { AppContext } from "../context";
 import useQueryConfig from "../hooks/useQueryConfig";
+import { purchaseStatus } from "../utils/constants";
+import { formatCurrency } from "../utils/functions";
 import http from "../utils/http";
 import { nameSchema } from "../utils/rules";
 import Popover from "./Popover";
-
 const logout = () => http.post("/logout");
 
 export default function Header() {
@@ -30,7 +32,16 @@ export default function Header() {
       setProfile(null);
     },
   });
-
+  // khi chuyển trang thì header ko bị unmount, mà chỉ bị re - render (do cái header nằm bọc ở ngoài), do đó cái call api nayf ko bị gọi,
+  // trừ trường hợp, logout, rồi vào register, rồi login rồi nhảy vào lại
+  // các query ko bị inactive => ko bị gọi lại => ko cần thiết set stale time
+  // ddo đó khi thêm giỏ hàng thì nó sẽ ko có cập nhật giỏ hàng, vì ko có call api
+  const { data: purchasesInCartData } = useQuery({
+    queryKey: ["purchases", { status: purchaseStatus.inCart }],
+    queryFn: () => purchaseApi.getPurchases({ status: purchaseStatus.inCart }),
+  });
+  const purchasesInCart = purchasesInCartData?.data.data;
+  console.log(purchasesInCart);
   const handleLogout = () => {
     logoutMutation.mutate();
   };
@@ -197,72 +208,51 @@ export default function Header() {
               placement="bottom-end"
               renderPopover={
                 <div className="relative max-w-[400px] rounded-sm border border-gray-200 bg-white text-sm shadow-md">
-                  <div className="p-2">
-                    <div className="capitalize text-gray-400">
-                      San pham moi them
-                    </div>
-                    <div className="mt-5">
-                      <div className="mt-4 flex items-center">
-                        <div className="flex-shrink-0">
-                          <img
-                            src="https://img.tgdd.vn/imgt/f_webp,fit_outside,quality_100,s_300x300/https://cdn.tgdd.vn/Products/Images/44/253703/s16/apple-macbook-pro-14-m1-pro-2021-xam-thumb-650x650.png"
-                            alt="anh"
-                            className="h-11 w-11 object-cover"
-                          />
-                        </div>
-                        <div className="ml-2 flex-grow overflow-hidden">
-                          <div className="truncate">
-                            MacBook Pro 14 inch M1 Pro 2021 16-Core GPU
-                          </div>
-                        </div>
-                        <div className="ml-2 flex-shrink-0">
-                          <span className="text-orange">41.990.000</span>
-                        </div>
+                  {purchasesInCart && purchasesInCart.length > 0 ? (
+                    <div className="p-2">
+                      <div className="capitalize text-gray-400">
+                        San pham moi them
                       </div>
-                      <div className="mt-4 flex items-center">
-                        <div className="flex-shrink-0">
-                          <img
-                            src="https://img.tgdd.vn/imgt/f_webp,fit_outside,quality_100,s_300x300/https://cdn.tgdd.vn/Products/Images/44/253703/s16/apple-macbook-pro-14-m1-pro-2021-xam-thumb-650x650.png"
-                            alt="anh"
-                            className="h-11 w-11 object-cover"
-                          />
-                        </div>
-                        <div className="ml-2 flex-grow overflow-hidden">
-                          <div className="truncate">
-                            MacBook Pro 14 inch M1 Pro 2021 16-Core GPU
+                      <div className="mt-5">
+                        {purchasesInCart.map((purchase) => (
+                          <div
+                            key={purchase._id}
+                            className="mt-4 flex items-center"
+                          >
+                            <div className="flex-shrink-0">
+                              <img
+                                src={purchase.product.image}
+                                alt={purchase.product.name}
+                                className="h-11 w-11 object-cover"
+                              />
+                            </div>
+                            <div className="ml-2 flex-grow overflow-hidden">
+                              <div className="truncate">
+                                {purchase.product.name}
+                              </div>
+                            </div>
+                            <div className="ml-2 flex-shrink-0">
+                              <span className="text-orange">
+                                {formatCurrency(purchase.product.price)} đ
+                              </span>
+                            </div>
                           </div>
-                        </div>
-                        <div className="ml-2 flex-shrink-0">
-                          <span className="text-orange">41.990.000</span>
-                        </div>
+                        ))}
                       </div>
-                      <div className="mt-4 flex items-center">
-                        <div className="flex-shrink-0">
-                          <img
-                            src="https://img.tgdd.vn/imgt/f_webp,fit_outside,quality_100,s_300x300/https://cdn.tgdd.vn/Products/Images/44/253703/s16/apple-macbook-pro-14-m1-pro-2021-xam-thumb-650x650.png"
-                            alt="anh"
-                            className="h-11 w-11 object-cover"
-                          />
+                      <div className="mt-6 flex items-center justify-between">
+                        <div className="capitailize text-xs text-gray-500">
+                          Them vao gio hang
                         </div>
-                        <div className="ml-2 flex-grow overflow-hidden">
-                          <div className="truncate">
-                            MacBook Pro 14 inch M1 Pro 2021 16-Core GPU
-                          </div>
-                        </div>
-                        <div className="ml-2 flex-shrink-0">
-                          <span className="text-orange">41.990.000</span>
-                        </div>
+                        <button className="rounded-sm bg-orange px-4 py-2 capitalize text-white hover:bg-opacity-80">
+                          Xem gio hang
+                        </button>
                       </div>
                     </div>
-                    <div className="mt-6 flex items-center justify-between">
-                      <div className="capitailize text-xs text-gray-500">
-                        Them vao gio hang
-                      </div>
-                      <button className="rounded-sm bg-orange px-4 py-2 capitalize text-white hover:bg-opacity-80">
-                        Xem gio hang
-                      </button>
+                  ) : (
+                    <div className="p-2">
+                      <div className="uppercase">không có sản phẩm</div>
                     </div>
-                  </div>
+                  )}
                 </div>
               }
             >

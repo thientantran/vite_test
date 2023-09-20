@@ -7,7 +7,7 @@ import { BrowserRouter } from "react-router-dom";
 import App from "./App.jsx";
 import { AppProvider } from "./context.jsx";
 import "./index.css";
-const queryClient = new QueryClient({
+export const queryClient = new QueryClient({
   defaultOptions: {
     queries: {
       refetchOnWindowFocus: false,
