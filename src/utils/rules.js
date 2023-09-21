@@ -34,14 +34,15 @@ export const schema = yup.object({
   price_max: yup.string().test({
     name: "price-not-allowerd",
     message: "Giá không phù hợp",
-    test(value) {
-      const price_max = value;
-      const { price_min } = this.parent;
-      if (price_min !== "" && price_max !== "") {
-        return Number(price_max) >= Number(price_min);
-      }
-      return price_min !== "" || price_max !== "";
-    },
+    // test(value) {
+    //   const price_max = value;
+    //   const { price_min } = this.parent;
+    //   if (price_min !== "" && price_max !== "") {
+    //     return Number(price_max) >= Number(price_min);
+    //   }
+    //   return price_min !== "" || price_max !== "";
+    // },
+    test: testPriceMinMax,
   }),
   name: yup.string().trim().required("Tên sản phẩm là bắt buộc!"),
 });

@@ -8,6 +8,7 @@ import { Link, createSearchParams, useNavigate } from "react-router-dom";
 import { priceSchema } from "../utils/rules";
 import Button from "./Button";
 import InputNumber from "./InputNumber";
+import InputV2 from "./InputV2";
 import RatingStar from "./RatingStar";
 
 export default function AsideFilter({ queryConfig, categories }) {
@@ -141,7 +142,18 @@ export default function AsideFilter({ queryConfig, categories }) {
         <div>Khoan gia</div>
         <form className="mt-2" onSubmit={onSubmit}>
           <div className="flex items-start">
-            <Controller
+            <InputV2
+              control={control}
+              name="price_min"
+              className="grow"
+              placeholder="Từ"
+              classNameInput="p-1 w-full outline-none border border-gray-300 focus:border-gray-500 rounded-sm focus:shadow-sm"
+              classNameError="hidden"
+              onChange={() => {
+                trigger("price_max");
+              }}
+            />
+            {/* <Controller
               control={control}
               name="price_min"
               render={({ field }) => {
@@ -160,7 +172,7 @@ export default function AsideFilter({ queryConfig, categories }) {
                   />
                 );
               }}
-            />
+            /> */}
             {/* <Input
               type="text"
               className="grow"
@@ -199,6 +211,8 @@ export default function AsideFilter({ queryConfig, categories }) {
           </div>
           <div className="mt-1 text-center text-sm text-red-600 min-h-[1.25rem]">
             {errors.price_min?.message}
+            {errors.price_max?.message}
+            {/* cho nay phai add vao, vi trigger den 1 cai thi chi chay test yup cho cai do, nen phai day du  */}
           </div>
           <Button className="w-full bg-orange py-2 flex items-center justify-center uppercase text-sm text-white hover:bg-orange/80">
             Ap dung
