@@ -52,12 +52,12 @@ export default function Header() {
   const onSubmitSearch = handleSubmit((data) => {
     const config = queryConfig.order
       ? omit(
-          {
-            ...queryConfig,
-            name: data.name,
-          },
-          ["order", "sort_by"],
-        )
+        {
+          ...queryConfig,
+          name: data.name,
+        },
+        ["order", "sort_by"],
+      )
       : { ...queryConfig, name: data.name };
     navigate({
       pathname: "/",
@@ -283,7 +283,7 @@ export default function Header() {
                   />
                 </svg>
                 <span className="absolute px-[9px] py-[1px] top-[-5px] left-[13px] rounded-full bg-white text-xs text-orange">
-                  {purchasesInCart.length}
+                  {purchasesInCart?.length}
                 </span>
               </Link>
             </Popover>

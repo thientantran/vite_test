@@ -1,5 +1,5 @@
 /* eslint-disable react/prop-types */
-import React from "react";
+import React, { useState } from "react";
 
 import InputNumber from "./InputNumber";
 
@@ -11,6 +11,7 @@ export default function QuantityController({
   value,
   ...rest
 }) {
+  const [localValue, setLocalValue] = useState(Number(value) || 0);
   const handleChange = (event) => {
     let _value = Number(event.target.value);
     // xử lý nếu nhập vào sai giá trị
@@ -20,21 +21,24 @@ export default function QuantityController({
       _value = 1;
     }
     onType && onType(_value);
+    setLocalValue(_value);
   };
   const increase = () => {
-    let _value = Number(value) + 1;
+    let _value = Number(value || localValue) + 1;
     if (max !== undefined && _value > max) {
       _value = max;
     }
     onIncrease && onIncrease(_value);
+    setLocalValue(_value);
   };
 
   const decrease = () => {
-    let _value = Number(value) - 1;
+    let _value = Number(value || localValue) - 1;
     if (_value < 1) {
       _value = 1;
     }
     onDecrease && onDecrease(_value);
+    setLocalValue(_value);
   };
   return (
     <div className="ml-10 flex items-center">
@@ -56,7 +60,7 @@ export default function QuantityController({
       <InputNumber
         className=""
         classNameError="hidden"
-        value={value}
+        value={value || localValue}
         classNameInput="h-8 w-14 border-t border-b border-gray-300 p-1 text-center outline-none"
         onChange={handleChange}
         {...rest}
