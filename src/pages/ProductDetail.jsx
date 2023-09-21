@@ -2,6 +2,7 @@ import { useMutation, useQuery } from "@tanstack/react-query";
 import DOMPurify from "dompurify";
 import React, { useEffect, useMemo, useRef, useState } from "react";
 import { useParams } from "react-router-dom";
+import { toast } from "react-toastify";
 
 import { productApi, purchaseApi } from "../apis/api";
 import Product from "../components/Product";
@@ -103,7 +104,8 @@ export default function ProductDetail() {
     addToCartMutation.mutate(
       { buy_count: buyCount, product_id: product?._id },
       {
-        onSuccess: () => {
+        onSuccess: (data) => {
+          toast.success(data.data.message, { autoClose: 1000 });
           queryClient.invalidateQueries({
             queryKey: ["purchases", { status: purchaseStatus.inCart }],
           });

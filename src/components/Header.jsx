@@ -15,6 +15,7 @@ import { nameSchema } from "../utils/rules";
 import Popover from "./Popover";
 const logout = () => http.post("/logout");
 
+const MAX_PURCHASES = 5;
 export default function Header() {
   const queryConfig = useQueryConfig();
   const { register, handleSubmit } = useForm({
@@ -215,33 +216,42 @@ export default function Header() {
                         San pham moi them
                       </div>
                       <div className="mt-5">
-                        {purchasesInCart.map((purchase) => (
-                          <div
-                            key={purchase._id}
-                            className="mt-4 flex items-center"
-                          >
-                            <div className="flex-shrink-0">
-                              <img
-                                src={purchase.product.image}
-                                alt={purchase.product.name}
-                                className="h-11 w-11 object-cover"
-                              />
-                            </div>
-                            <div className="ml-2 flex-grow overflow-hidden">
-                              <div className="truncate">
-                                {purchase.product.name}
+                        {purchasesInCart
+                          .slice(0, MAX_PURCHASES)
+                          .map((purchase) => (
+                            <div
+                              key={purchase._id}
+                              className="mt-4 flex items-center"
+                            >
+                              <div className="flex-shrink-0">
+                                <img
+                                  src={purchase.product.image}
+                                  alt={purchase.product.name}
+                                  className="h-11 w-11 object-cover"
+                                />
+                              </div>
+                              <div className="ml-2 flex-grow overflow-hidden">
+                                <div className="truncate">
+                                  {purchase.product.name}
+                                </div>
+                              </div>
+                              <div className="ml-2 flex-shrink-0">
+                                <span className="text-orange">
+                                  {formatCurrency(purchase.product.price)} đ
+                                </span>
                               </div>
                             </div>
-                            <div className="ml-2 flex-shrink-0">
-                              <span className="text-orange">
-                                {formatCurrency(purchase.product.price)} đ
-                              </span>
-                            </div>
-                          </div>
-                        ))}
+                          ))}
                       </div>
                       <div className="mt-6 flex items-center justify-between">
                         <div className="capitailize text-xs text-gray-500">
+                          {purchasesInCart.length > MAX_PURCHASES ? (
+                            <span className="text-orange text-lg font-bold">
+                              {purchasesInCart.length - MAX_PURCHASES + " "}
+                            </span>
+                          ) : (
+                            ""
+                          )}
                           Them vao gio hang
                         </div>
                         <button className="rounded-sm bg-orange px-4 py-2 capitalize text-white hover:bg-opacity-80">
@@ -257,7 +267,7 @@ export default function Header() {
                 </div>
               }
             >
-              <Link to="/">
+              <Link to="/" className="relative">
                 <svg
                   xmlns="http://www.w3.org/2000/svg"
                   fill="none"
@@ -272,6 +282,9 @@ export default function Header() {
                     d="M2.25 3h1.386c.51 0 .955.343 1.087.835l.383 1.437M7.5 14.25a3 3 0 00-3 3h15.75m-12.75-3h11.218c1.121-2.3 2.1-4.684 2.924-7.138a60.114 60.114 0 00-16.536-1.84M7.5 14.25L5.106 5.272M6 20.25a.75.75 0 11-1.5 0 .75.75 0 011.5 0zm12.75 0a.75.75 0 11-1.5 0 .75.75 0 011.5 0z"
                   />
                 </svg>
+                <span className="absolute px-[9px] py-[1px] top-[-5px] left-[13px] rounded-full bg-white text-xs text-orange">
+                  {purchasesInCart.length}
+                </span>
               </Link>
             </Popover>
           </div>
