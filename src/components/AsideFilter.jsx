@@ -5,11 +5,11 @@ import { omit } from "lodash";
 import { Controller, useForm } from "react-hook-form";
 import { Link, createSearchParams, useNavigate } from "react-router-dom";
 
-import { priceSchema } from "../utils/rules";
 import Button from "./Button";
 import InputNumber from "./InputNumber";
 import InputV2 from "./InputV2";
 import RatingStar from "./RatingStar";
+import { priceSchema } from "../utils/rules";
 
 export default function AsideFilter({ queryConfig, categories }) {
   const { category } = queryConfig;

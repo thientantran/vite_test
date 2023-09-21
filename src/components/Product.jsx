@@ -1,12 +1,12 @@
 /* eslint-disable react/prop-types */
 import { Link } from "react-router-dom";
 
+import Rating from "./Rating";
 import {
   formatCurrency,
   formatNumberToSocialStyle,
   generateNameId,
 } from "../utils/functions";
-import Rating from "./Rating";
 
 export default function Product({ product }) {
   return (

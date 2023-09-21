@@ -5,6 +5,7 @@ import React, { useContext } from "react";
 import { useForm } from "react-hook-form";
 import { Link, createSearchParams, useNavigate } from "react-router-dom";
 
+import Popover from "./Popover";
 import { purchaseApi } from "../apis/api";
 import { AppContext } from "../context";
 import useQueryConfig from "../hooks/useQueryConfig";
@@ -13,7 +14,6 @@ import { purchaseStatus } from "../utils/constants";
 import { formatCurrency } from "../utils/functions";
 import http from "../utils/http";
 import { nameSchema } from "../utils/rules";
-import Popover from "./Popover";
 const logout = () => http.post("/logout");
 
 const MAX_PURCHASES = 5;
