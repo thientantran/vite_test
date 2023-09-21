@@ -8,6 +8,7 @@ import { Link, createSearchParams, useNavigate } from "react-router-dom";
 import { purchaseApi } from "../apis/api";
 import { AppContext } from "../context";
 import useQueryConfig from "../hooks/useQueryConfig";
+import { queryClient } from "../main";
 import { purchaseStatus } from "../utils/constants";
 import { formatCurrency } from "../utils/functions";
 import http from "../utils/http";
@@ -31,6 +32,9 @@ export default function Header() {
     onSuccess: () => {
       setIsAuthenticated(false);
       setProfile(null);
+      queryClient.removeQueries({
+        queryKey: ["purchases", { status: purchaseStatus.inCart }],
+      });
     },
   });
   // khi chuyển trang thì header ko bị unmount, mà chỉ bị re - render (do cái header nằm bọc ở ngoài), do đó cái call api nayf ko bị gọi,
@@ -41,6 +45,7 @@ export default function Header() {
   const { data: purchasesInCartData } = useQuery({
     queryKey: ["purchases", { status: purchaseStatus.inCart }],
     queryFn: () => purchaseApi.getPurchases({ status: purchaseStatus.inCart }),
+    enabled: isAuthenticated,
   });
   const purchasesInCart = purchasesInCartData?.data.data;
   console.log(purchasesInCart);
@@ -52,12 +57,12 @@ export default function Header() {
   const onSubmitSearch = handleSubmit((data) => {
     const config = queryConfig.order
       ? omit(
-        {
-          ...queryConfig,
-          name: data.name,
-        },
-        ["order", "sort_by"],
-      )
+          {
+            ...queryConfig,
+            name: data.name,
+          },
+          ["order", "sort_by"],
+        )
       : { ...queryConfig, name: data.name };
     navigate({
       pathname: "/",
@@ -282,9 +287,11 @@ export default function Header() {
                     d="M2.25 3h1.386c.51 0 .955.343 1.087.835l.383 1.437M7.5 14.25a3 3 0 00-3 3h15.75m-12.75-3h11.218c1.121-2.3 2.1-4.684 2.924-7.138a60.114 60.114 0 00-16.536-1.84M7.5 14.25L5.106 5.272M6 20.25a.75.75 0 11-1.5 0 .75.75 0 011.5 0zm12.75 0a.75.75 0 11-1.5 0 .75.75 0 011.5 0z"
                   />
                 </svg>
-                <span className="absolute px-[9px] py-[1px] top-[-5px] left-[13px] rounded-full bg-white text-xs text-orange">
-                  {purchasesInCart?.length}
-                </span>
+                {purchasesInCart && (
+                  <span className="absolute px-[9px] py-[1px] top-[-5px] left-[13px] rounded-full bg-white text-xs text-orange">
+                    {purchasesInCart.length}
+                  </span>
+                )}
               </Link>
             </Popover>
           </div>
