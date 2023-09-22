@@ -4,6 +4,7 @@ import { Navigate, Outlet, useRoutes } from "react-router-dom";
 import { AppContext } from "../context";
 import MainLayout from "../layouts/MainLayout";
 import RegisterLayout from "../layouts/RegisterLayout";
+import Cart from "../pages/Cart";
 import Login from "../pages/Login";
 import ProductDetail from "../pages/ProductDetail";
 import Products from "../pages/Products";
@@ -29,6 +30,14 @@ export default function useRouteElements() {
           element: (
             <MainLayout>
               <Profile />
+            </MainLayout>
+          ),
+        },
+        {
+          path: "/cart",
+          element: (
+            <MainLayout>
+              <Cart />
             </MainLayout>
           ),
         },

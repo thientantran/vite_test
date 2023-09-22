@@ -5,7 +5,6 @@ import React, { useContext } from "react";
 import { useForm } from "react-hook-form";
 import { Link, createSearchParams, useNavigate } from "react-router-dom";
 
-import Popover from "./Popover";
 import { purchaseApi } from "../apis/api";
 import { AppContext } from "../context";
 import useQueryConfig from "../hooks/useQueryConfig";
@@ -14,6 +13,7 @@ import { purchaseStatus } from "../utils/constants";
 import { formatCurrency } from "../utils/functions";
 import http from "../utils/http";
 import { nameSchema } from "../utils/rules";
+import Popover from "./Popover";
 const logout = () => http.post("/logout");
 
 const MAX_PURCHASES = 5;
@@ -259,9 +259,12 @@ export default function Header() {
                           )}
                           Them vao gio hang
                         </div>
-                        <button className="rounded-sm bg-orange px-4 py-2 capitalize text-white hover:bg-opacity-80">
+                        <Link
+                          to="/cart"
+                          className="rounded-sm bg-orange px-4 py-2 capitalize text-white hover:bg-opacity-80"
+                        >
                           Xem gio hang
-                        </button>
+                        </Link>
                       </div>
                     </div>
                   ) : (
