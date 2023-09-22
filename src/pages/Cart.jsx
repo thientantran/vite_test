@@ -1,10 +1,19 @@
+import { useQuery } from "@tanstack/react-query";
 import React from "react";
 import { Link } from "react-router-dom";
 
+import { purchaseApi } from "../apis/api";
 import QuantityController from "../components/QuantityController";
-import { formatCurrency } from "../utils/functions";
+import { purchaseStatus } from "../utils/constants";
+import { formatCurrency, generateNameId } from "../utils/functions";
 
 export default function Cart() {
+  const { data: purchasesInCartData } = useQuery({
+    queryKey: ["purchases", { status: purchaseStatus.inCart }],
+    queryFn: () => purchaseApi.getPurchases({ status: purchaseStatus.inCart }),
+  });
+
+  const purchaseInCart = purchasesInCartData?.data.data;
   return (
     <div className="bg-neutral-100 py-16">
       <div className="container">
@@ -13,7 +22,7 @@ export default function Cart() {
           <div className="min-w-[1000px]">
             {/* Header for cart */}
             <div className="grid grid-cols-12 rounded-sm bg-white px-9 py-5 text-sm capitalize text-gray-500 shadow">
-              <div className="col-span-6">
+              <div className="col-span-5">
                 <div className="flex items-center">
                   <div className="flex flex-shrink-0 items-center justify-center pr-3">
                     <input type="checkbox" className="h-5 w-5 accent-orange" />
@@ -21,7 +30,7 @@ export default function Cart() {
                   <div className="flex-grow text-black">Sản phẩm</div>
                 </div>
               </div>
-              <div className="col-span-6">
+              <div className="col-span-7">
                 <div className="grid grid-cols-5 text-center">
                   <div className="col-span-2">Đơn giá</div>
                   <div className="col-span-1">Số lượng</div>
@@ -34,65 +43,84 @@ export default function Cart() {
             {/* All products */}
             <div className="my-3 rounded-sm bg-white p-5 shadow">
               {/* a product */}
-              <div className="mt-5 grid grid-cols-12 rounded-sm border border-gray-200 bg-white px-4 py-5 text-sm text-gray-500 fist:mt-0">
-                <div className="col-span-6">
-                  <div className="flex">
-                    <div className="flex flex-shrink-0 items-center justify-center pr-3">
-                      <input
-                        type="checkbox"
-                        className="h-5 w-5 accent-orange"
-                      />
-                    </div>
-                    <div className="flex-grow">
-                      <div className="flex items-center">
-                        <Link to="/" className="h-20 w-20 flex-shrink">
-                          <img
-                            className="object-cover h-full w-full"
-                            src="https://vtv1.mediacdn.vn/zoom/640_400/2023/2/21/210223-jisoo-blackpink-16769495254201335408105-crop-16769495320161575133037.jpeg"
-                            alt="https://vtv1.mediacdn.vn/zoom/640_400/2023/2/21/210223-jisoo-blackpink-16769495254201335408105-crop-16769495320161575133037.jpeg"
-                          />
-                        </Link>
-                        <div className="flex-grow px-2 pb-2 pt-1">
-                          <Link className="line-clamp-2">Tên sản phẩm </Link>
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-                <div className="col-span-6">
-                  <div className="flex w-full h-full">
-                    <div className="grid grid-cols-5 items-center">
-                      <div className="col-span-2">
-                        <div className="flex flex-col items-center justify-center">
-                          <span className="text-gray-300 text-sm line-through">
-                            đ {formatCurrency(100000)}
-                          </span>
-                          <span className="text-orange text-xl">
-                            đ {formatCurrency(79000)}
-                          </span>
-                        </div>
-                      </div>
-                      <div className="col-span-1">
-                        <QuantityController
-                          classNameWrapper=""
-                          max={3000}
-                          value={10}
+              {purchaseInCart?.map((item, index) => (
+                <div
+                  key={item._id}
+                  className="mt-5 grid grid-cols-12 rounded-sm border border-gray-200 bg-white px-4 py-5 text-sm text-gray-500 fist:mt-0"
+                >
+                  <div className="col-span-5">
+                    <div className="flex">
+                      <div className="flex flex-shrink-0 items-center justify-center pr-3">
+                        <input
+                          type="checkbox"
+                          className="h-5 w-5 accent-orange"
                         />
                       </div>
-                      <div className="col-span-1 text-center">
-                        <span className="text-orange text-xl">
-                          đ {formatCurrency(10 * 79000)}
-                        </span>
+                      <div className="flex-grow">
+                        <div className="flex items-center">
+                          <Link
+                            to={`/${generateNameId({
+                              name: item.product.name,
+                              id: item.product._id,
+                            })}`}
+                            className="h-20 w-20"
+                          >
+                            <img
+                              className="object-cover h-full w-full"
+                              src={item.product.image}
+                              alt={item.product.name}
+                            />
+                          </Link>
+                          <div className="flex-grow px-2 pb-2 pt-1">
+                            <Link className="line-clamp-2">
+                              {item.product.name}
+                            </Link>
+                          </div>
+                        </div>
                       </div>
-                      <div className="col-span-1 text-center">
-                        <button className="bg-none text-black transition-colors hover:text-orange">
-                          Xoá
-                        </button>
+                    </div>
+                  </div>
+                  <div className="col-span-7">
+                    <div className="flex h-full">
+                      <div className="grid grid-cols-5 w-full items-center">
+                        <div className="col-span-2">
+                          <div className="flex flex-col items-center justify-center">
+                            <span className="text-gray-300 text-sm line-through">
+                              đ{" "}
+                              {formatCurrency(
+                                item.product.price_before_discount,
+                              )}
+                            </span>
+                            <span className="text-orange text-xl">
+                              đ {formatCurrency(item.product.price)}
+                            </span>
+                          </div>
+                        </div>
+                        <div className="col-span-1">
+                          <QuantityController
+                            classNameWrapper=""
+                            max={item.product.quantity}
+                            value={item.buy_count}
+                          />
+                        </div>
+                        <div className="col-span-1 text-center">
+                          <span className="text-orange text-xl">
+                            đ{" "}
+                            {formatCurrency(
+                              item.buy_count * item.product.price,
+                            )}
+                          </span>
+                        </div>
+                        <div className="col-span-1 text-center">
+                          <button className="bg-none text-black transition-colors hover:text-orange">
+                            Xoá
+                          </button>
+                        </div>
                       </div>
                     </div>
                   </div>
                 </div>
-              </div>
+              ))}
             </div>
           </div>
         </div>
