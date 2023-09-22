@@ -30,4 +30,15 @@ export const purchaseApi = {
       params,
     });
   },
+  buyProducts(body) {
+    return http.post(`${URL.purchases}/buy-products`, body);
+  },
+  updatePurchases(body) {
+    return http.put(`${URL.purchases}/update-purchase`, body);
+  },
+  deletePurchase(purchaseId) {
+    return http.delete(`${URL.purchases}`, {
+      data: purchaseId,
+    });
+  },
 };

@@ -1,4 +1,4 @@
-import { useQuery } from "@tanstack/react-query";
+import { useMutation, useQuery } from "@tanstack/react-query";
 import { produce } from "immer";
 import React, { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
@@ -11,11 +11,18 @@ import { formatCurrency, generateNameId } from "../utils/functions";
 export default function Cart() {
   const [extendedPurchases, setExtendedPurchases] = useState([]);
 
-  const { data: purchasesInCartData } = useQuery({
+  const { data: purchasesInCartData, refetch } = useQuery({
     queryKey: ["purchases", { status: purchaseStatus.inCart }],
     queryFn: () => purchaseApi.getPurchases({ status: purchaseStatus.inCart }),
   });
-
+  const updatePurchaseMutation = useMutation({
+    mutationFn: (body) => purchaseApi.updatePurchases(body),
+    onSuccess: () => {
+      refetch();
+      // khi mà update số lượng, thì khi đó sẽ gọi api để update, sau khi api gọi update thành công thì sẽ refetch để gọi data về lại
+      // khi đó thì sẽ nhảy vào useEffect ở dưới để đổi lại checked và disable = false
+    },
+  });
   const purchaseInCart = purchasesInCartData?.data.data;
 
   // xem là có đang chọn tất cả hay ko, đưa cái này vào cái input của checked hết sản phẩm, để nó check và render ra
@@ -51,6 +58,19 @@ export default function Cart() {
         checked: !isAllChecked,
       })),
     );
+  };
+
+  const handleQuantity = (itemIndex, value) => {
+    const item = extendedPurchases[itemIndex];
+    setExtendedPurchases(
+      produce((prev) => {
+        prev[itemIndex].disabled = true;
+      }),
+    );
+    updatePurchaseMutation.mutate({
+      product_id: item.product._id,
+      buy_count: value,
+    });
   };
   return (
     <div className="bg-neutral-100 py-16">
@@ -146,6 +166,9 @@ export default function Cart() {
                             classNameWrapper=""
                             max={item.product.quantity}
                             value={item.buy_count}
+                            onIncrease={(value) => handleQuantity(index, value)}
+                            onDecrease={(value) => handleQuantity(index, value)}
+                            disabled={item.disabled}
                           />
                         </div>
                         <div className="col-span-1 text-center">
@@ -189,7 +212,9 @@ export default function Cart() {
             <div className="ml-auto mt-5 flex flex-col sm:mt-0 sm:flex-row sm:items-center">
               <div>
                 <div className="flex items-center justify-end">
-                  <div>Tổng thanh toán (0 sản phẩm): </div>
+                  <div>
+                    Tổng thanh toán ({extendedPurchases.length} sản phẩm):{" "}
+                  </div>
                   <div className="ml-2 text-2xl text-orange">
                     đ {formatCurrency(790000)}
                   </div>

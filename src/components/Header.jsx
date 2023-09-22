@@ -48,7 +48,6 @@ export default function Header() {
     enabled: isAuthenticated,
   });
   const purchasesInCart = purchasesInCartData?.data.data;
-  console.log(purchasesInCart);
   const handleLogout = () => {
     logoutMutation.mutate();
   };
