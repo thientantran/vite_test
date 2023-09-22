@@ -108,10 +108,10 @@ export default function Cart() {
                               name: item.product.name,
                               id: item.product._id,
                             })}`}
-                            className="h-20 w-20"
+                            className="h-20 w-20 flex-shrink-0"
                           >
                             <img
-                              className="object-cover h-full w-full"
+                              // className="object-cover h-full w-full"
                               src={item.product.image}
                               alt={item.product.name}
                             />
