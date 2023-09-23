@@ -1,7 +1,7 @@
 import { useMutation, useQuery } from "@tanstack/react-query";
 import DOMPurify from "dompurify";
 import React, { useEffect, useMemo, useRef, useState } from "react";
-import { useParams } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import { toast } from "react-toastify";
 
 import { productApi, purchaseApi } from "../apis/api";
@@ -113,6 +113,21 @@ export default function ProductDetail() {
       },
     );
   };
+  const navigate = useNavigate();
+  const buyNow = async () => {
+    const res = await addToCartMutation.mutateAsync({
+      buy_count: buyCount,
+      product_id: product?._id,
+    });
+    const purchase = res.data.data;
+    navigate("/cart", {
+      // gui o trang thai giong nhu 1 state
+      state: {
+        purchaseId: purchase._id,
+      },
+    });
+  };
+
   if (!product) {
     return null;
   }
@@ -134,7 +149,7 @@ export default function ProductDetail() {
                   alt={product.image}
                   className="absolute left-0 top-0 h-full w-full bg-white object-cover pointer-events-none"
                   ref={imageRef}
-                  // pointer-events-none để không bị event bubble, (là khi hover vào thẻ con, cũng có nghĩa là thẻ cha, có thể gây sai số)
+                // pointer-events-none để không bị event bubble, (là khi hover vào thẻ con, cũng có nghĩa là thẻ cha, có thể gây sai số)
                 />
               </div>
               <div className="relative grid grid-cols-5 gap-1">
@@ -287,7 +302,10 @@ export default function ProductDetail() {
                   </svg>
                   thêm vào giỏ hàng
                 </button>
-                <button className="ml-4 flex h-12 bg-orange items-center min-w-[5rem] justify-center rounded-sm px-5 capitalize text-white shadow-sm outline-none hover:bg-orange/90">
+                <button
+                  onClick={buyNow}
+                  className="ml-4 flex h-12 bg-orange items-center min-w-[5rem] justify-center rounded-sm px-5 capitalize text-white shadow-sm outline-none hover:bg-orange/90"
+                >
                   Mua ngay
                 </button>
               </div>

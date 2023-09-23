@@ -1,16 +1,18 @@
 import { useMutation, useQuery } from "@tanstack/react-query";
 import { produce } from "immer";
-import React, { useEffect, useState } from "react";
-import { Link } from "react-router-dom";
+import { keyBy } from "lodash";
+import React, { useContext, useEffect } from "react";
+import { Link, useLocation } from "react-router-dom";
 import { toast } from "react-toastify";
 
 import { purchaseApi } from "../apis/api";
 import QuantityController from "../components/QuantityController";
+import { AppContext } from "../context";
 import { purchaseStatus } from "../utils/constants";
 import { formatCurrency, generateNameId } from "../utils/functions";
 
 export default function Cart() {
-  const [extendedPurchases, setExtendedPurchases] = useState([]);
+  const { extendedPurchases, setExtendedPurchases } = useContext(AppContext);
 
   const { data: purchasesInCartData, refetch } = useQuery({
     queryKey: ["purchases", { status: purchaseStatus.inCart }],
@@ -47,16 +49,26 @@ export default function Cart() {
   // xem là có đang chọn tất cả hay ko, đưa cái này vào cái input của checked hết sản phẩm, để nó check và render ra
   const isAllChecked = extendedPurchases.every((purchase) => purchase.checked);
 
+  const location = useLocation();
+  const choosenPurchaseIdFromLocation = location.state?.purchaseId;
+
   // mỗi khi vào thì nó tạo một cái check array
   // rồi dùng cái extended purchases này để render ra
   useEffect(() => {
-    setExtendedPurchases(
-      purchaseInCart?.map((item) => ({
-        ...item,
-        disabled: false,
-        checked: false,
-      })) || [],
-    );
+    console.log("ZO ");
+    setExtendedPurchases((prev) => {
+      const extendedPurchasesObject = keyBy(prev, "_id");
+      return (
+        purchaseInCart?.map((item) => ({
+          ...item,
+          disabled: false,
+          checked: Boolean(
+            choosenPurchaseIdFromLocation === item._id ||
+            extendedPurchasesObject[item._id]?.checked,
+          ),
+        })) || []
+      );
+    });
   }, [purchaseInCart]);
 
   const handleCheck = (productIndex) => (event) => {
@@ -108,7 +120,6 @@ export default function Cart() {
     (purchase) => purchase.checked,
   );
 
-  console.log(checkedPurchases.length);
   const handleDeleteManyPurchases = () => {
     const purchaseIds = checkedPurchases.map((purchase) => purchase._id);
     deletePurchaseMutation.mutate(purchaseIds);

@@ -7,6 +7,8 @@ const initialAppContext = {
   setIsAuthenticated: () => null,
   profile: getProfileFromLS(),
   setProfile: () => null,
+  extendedPurchases: [],
+  setExtendedPurchases: () => null,
 };
 
 export const AppContext = createContext(initialAppContext);
@@ -16,10 +18,20 @@ export const AppProvider = ({ children }) => {
   const [isAuthenticated, setIsAuthenticated] = useState(
     initialAppContext.isAuthenticated,
   );
+  const [extendedPurchases, setExtendedPurchases] = useState(
+    initialAppContext.extendedPurchases,
+  );
   const [profile, setProfile] = useState(initialAppContext.profile);
   return (
     <AppContext.Provider
-      value={{ isAuthenticated, setIsAuthenticated, profile, setProfile }}
+      value={{
+        isAuthenticated,
+        setIsAuthenticated,
+        profile,
+        setProfile,
+        extendedPurchases,
+        setExtendedPurchases,
+      }}
     >
       {children}
     </AppContext.Provider>
