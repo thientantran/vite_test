@@ -8,6 +8,7 @@ export default function QuantityController({
   onIncrease,
   onDecrease,
   onType,
+  onFocusOut,
   value,
   classNameWrapper = "ml-10",
   ...rest
@@ -29,7 +30,10 @@ export default function QuantityController({
     if (max !== undefined && _value > max) {
       _value = max;
     }
-    onIncrease && onIncrease(_value);
+    if (localValue !== _value) {
+      onIncrease && onIncrease(_value);
+    }
+
     setLocalValue(_value);
   };
 
@@ -38,9 +42,16 @@ export default function QuantityController({
     if (_value < 1) {
       _value = 1;
     }
-    onDecrease && onDecrease(_value);
+    if (localValue !== _value) {
+      onDecrease && onDecrease(_value);
+    }
+
     setLocalValue(_value);
   };
+  const handleBlur = (event) => {
+    onFocusOut && onFocusOut(Number(event.target.value));
+  };
+  // ghi nhap so luong vao, roi click ra ngoai, co nghia la outFocus, thi no se run cai handleblur de call API
   return (
     <div className={`${classNameWrapper} flex items-center`}>
       <button
@@ -64,6 +75,7 @@ export default function QuantityController({
         value={value || localValue}
         classNameInput="h-8 w-14 border-t border-b border-gray-300 p-1 text-center outline-none"
         onChange={handleChange}
+        onBlur={handleBlur}
         {...rest}
       />
       <button

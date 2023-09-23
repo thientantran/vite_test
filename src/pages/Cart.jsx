@@ -72,6 +72,14 @@ export default function Cart() {
       buy_count: value,
     });
   };
+
+  const handleTypeQuantity = (purchaseIndex) => (value) => {
+    setExtendedPurchases(
+      produce((prev) => {
+        prev[purchaseIndex].buy_count = value;
+      }),
+    );
+  };
   return (
     <div className="bg-neutral-100 py-16">
       <div className="container">
@@ -168,7 +176,9 @@ export default function Cart() {
                             value={item.buy_count}
                             onIncrease={(value) => handleQuantity(index, value)}
                             onDecrease={(value) => handleQuantity(index, value)}
+                            onType={handleTypeQuantity(index)}
                             disabled={item.disabled}
+                            onFocusOut={(value) => handleQuantity(index, value)}
                           />
                         </div>
                         <div className="col-span-1 text-center">
