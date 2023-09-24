@@ -1,7 +1,7 @@
 import { useMutation, useQuery } from "@tanstack/react-query";
 import { produce } from "immer";
 import { keyBy } from "lodash";
-import React, { useContext, useEffect } from "react";
+import React, { useContext, useEffect, useMemo } from "react";
 import { Link, useLocation } from "react-router-dom";
 import { toast } from "react-toastify";
 
@@ -55,7 +55,6 @@ export default function Cart() {
   // mỗi khi vào thì nó tạo một cái check array
   // rồi dùng cái extended purchases này để render ra
   useEffect(() => {
-    console.log("ZO ");
     setExtendedPurchases((prev) => {
       const extendedPurchasesObject = keyBy(prev, "_id");
       return (
@@ -116,17 +115,36 @@ export default function Cart() {
     deletePurchaseMutation.mutate([purchaseId]);
   };
 
-  const checkedPurchases = extendedPurchases.filter(
-    (purchase) => purchase.checked,
+  const checkedPurchases = useMemo(
+    () => extendedPurchases.filter((purchase) => purchase.checked),
+    [extendedPurchases],
   );
 
+  const checkedPurchasesCount = checkedPurchases.length;
+  const totalCheckedPurchasePrice = useMemo(
+    () =>
+      checkedPurchases.reduce((result, current) => {
+        return result + current.product.price * current.buy_count;
+      }, 0),
+    [checkedPurchases],
+  );
+  const totalSavingPrice = useMemo(
+    () =>
+      checkedPurchases.reduce((result, current) => {
+        return (
+          result +
+          (current.product.price_before_discount - current.product.price) *
+          current.buy_count
+        );
+      }, 0),
+    [checkedPurchases],
+  );
   const handleDeleteManyPurchases = () => {
     const purchaseIds = checkedPurchases.map((purchase) => purchase._id);
     deletePurchaseMutation.mutate(purchaseIds);
   };
 
   const handleBuyPurchases = () => {
-    console.log("Click");
     if (checkedPurchases.length > 0) {
       const body = checkedPurchases.map((purchase) => ({
         product_id: purchase.product._id,
@@ -286,16 +304,16 @@ export default function Cart() {
               <div>
                 <div className="flex items-center justify-end">
                   <div>
-                    Tổng thanh toán ({extendedPurchases.length} sản phẩm):{" "}
+                    Tổng thanh toán ({checkedPurchasesCount} sản phẩm):{" "}
                   </div>
                   <div className="ml-2 text-2xl text-orange">
-                    đ {formatCurrency(790000)}
+                    đ {formatCurrency(totalCheckedPurchasePrice)}
                   </div>
                 </div>
                 <div className="flex items-center justify-end text-sm">
                   <div className="text-gray-500">Tiết kiệm</div>
                   <div className="ml-6 text-orange">
-                    đ {formatCurrency(210000)}
+                    đ {formatCurrency(totalSavingPrice)}
                   </div>
                 </div>
               </div>
