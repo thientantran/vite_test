@@ -63,7 +63,7 @@ export default function Cart() {
           disabled: false,
           checked: Boolean(
             choosenPurchaseIdFromLocation === item._id ||
-            extendedPurchasesObject[item._id]?.checked,
+              extendedPurchasesObject[item._id]?.checked,
           ),
         })) || []
       );
@@ -134,7 +134,7 @@ export default function Cart() {
         return (
           result +
           (current.product.price_before_discount - current.product.price) *
-          current.buy_count
+            current.buy_count
         );
       }, 0),
     [checkedPurchases],

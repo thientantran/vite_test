@@ -149,7 +149,7 @@ export default function ProductDetail() {
                   alt={product.image}
                   className="absolute left-0 top-0 h-full w-full bg-white object-cover pointer-events-none"
                   ref={imageRef}
-                // pointer-events-none để không bị event bubble, (là khi hover vào thẻ con, cũng có nghĩa là thẻ cha, có thể gây sai số)
+                  // pointer-events-none để không bị event bubble, (là khi hover vào thẻ con, cũng có nghĩa là thẻ cha, có thể gây sai số)
                 />
               </div>
               <div className="relative grid grid-cols-5 gap-1">

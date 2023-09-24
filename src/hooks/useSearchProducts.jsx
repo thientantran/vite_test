@@ -3,8 +3,8 @@ import { omit } from "lodash";
 import { useForm } from "react-hook-form";
 import { createSearchParams, useNavigate } from "react-router-dom";
 
-import { nameSchema } from "../utils/rules";
 import useQueryConfig from "./useQueryConfig";
+import { nameSchema } from "../utils/rules";
 
 export default function useSearchProducts() {
   const queryConfig = useQueryConfig();
@@ -18,12 +18,12 @@ export default function useSearchProducts() {
   const onSubmitSearch = handleSubmit((data) => {
     const config = queryConfig.order
       ? omit(
-        {
-          ...queryConfig,
-          name: data.name,
-        },
-        ["order", "sort_by"],
-      )
+          {
+            ...queryConfig,
+            name: data.name,
+          },
+          ["order", "sort_by"],
+        )
       : { ...queryConfig, name: data.name };
     navigate({
       pathname: "/",

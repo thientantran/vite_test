@@ -2,13 +2,13 @@ import { useQuery } from "@tanstack/react-query";
 import React, { useContext } from "react";
 import { Link } from "react-router-dom";
 
+import NavBar from "./NavBar";
+import Popover from "./Popover";
 import { purchaseApi } from "../apis/api";
 import { AppContext } from "../context";
 import useSearchProducts from "../hooks/useSearchProducts";
 import { purchaseStatus } from "../utils/constants";
 import { formatCurrency } from "../utils/functions";
-import NavBar from "./NavBar";
-import Popover from "./Popover";
 
 const MAX_PURCHASES = 5;
 export default function Header() {
