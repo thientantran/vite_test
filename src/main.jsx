@@ -11,6 +11,8 @@ export const queryClient = new QueryClient({
   defaultOptions: {
     queries: {
       refetchOnWindowFocus: false,
+      retry: 0,
+      // khi goi API that bai, thi se ko co gang goi lai API nua, chi goi 1 lan dau tien
     },
   },
 });

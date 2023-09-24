@@ -9,6 +9,7 @@ const initialAppContext = {
   setProfile: () => null,
   extendedPurchases: [],
   setExtendedPurchases: () => null,
+  reset: () => null,
 };
 
 export const AppContext = createContext(initialAppContext);
@@ -22,6 +23,11 @@ export const AppProvider = ({ children }) => {
     initialAppContext.extendedPurchases,
   );
   const [profile, setProfile] = useState(initialAppContext.profile);
+  const reset = () => {
+    setIsAuthenticated(false);
+    setExtendedPurchases([]);
+    setProfile(null);
+  };
   return (
     <AppContext.Provider
       value={{
@@ -31,6 +37,7 @@ export const AppProvider = ({ children }) => {
         setProfile,
         extendedPurchases,
         setExtendedPurchases,
+        reset,
       }}
     >
       {children}
