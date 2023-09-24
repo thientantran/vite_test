@@ -1,28 +1,24 @@
-import { yupResolver } from "@hookform/resolvers/yup";
 import { useQuery } from "@tanstack/react-query";
-import { omit } from "lodash";
 import React, { useContext } from "react";
-import { useForm } from "react-hook-form";
-import { Link, createSearchParams, useNavigate } from "react-router-dom";
+import { Link } from "react-router-dom";
 
-import NavBar from "./NavBar";
-import Popover from "./Popover";
 import { purchaseApi } from "../apis/api";
 import { AppContext } from "../context";
-import useQueryConfig from "../hooks/useQueryConfig";
+import useSearchProducts from "../hooks/useSearchProducts";
 import { purchaseStatus } from "../utils/constants";
 import { formatCurrency } from "../utils/functions";
-import { nameSchema } from "../utils/rules";
+import NavBar from "./NavBar";
+import Popover from "./Popover";
 
 const MAX_PURCHASES = 5;
 export default function Header() {
-  const queryConfig = useQueryConfig();
-  const { register, handleSubmit } = useForm({
-    defaultValues: {
-      name: "",
-    },
-    resolver: yupResolver(nameSchema),
-  });
+  // const queryConfig = useQueryConfig();
+  // const { register, handleSubmit } = useForm({
+  //   defaultValues: {
+  //     name: "",
+  //   },
+  //   resolver: yupResolver(nameSchema),
+  // });
   const { isAuthenticated } = useContext(AppContext);
   // const logoutMutation = useMutation({
   //   mutationFn: logout,
@@ -49,22 +45,23 @@ export default function Header() {
   //   logoutMutation.mutate();
   // };
 
-  const navigate = useNavigate();
-  const onSubmitSearch = handleSubmit((data) => {
-    const config = queryConfig.order
-      ? omit(
-          {
-            ...queryConfig,
-            name: data.name,
-          },
-          ["order", "sort_by"],
-        )
-      : { ...queryConfig, name: data.name };
-    navigate({
-      pathname: "/",
-      search: createSearchParams(config).toString(),
-    });
-  });
+  // const navigate = useNavigate();
+  // const onSubmitSearch = handleSubmit((data) => {
+  //   const config = queryConfig.order
+  //     ? omit(
+  //         {
+  //           ...queryConfig,
+  //           name: data.name,
+  //         },
+  //         ["order", "sort_by"],
+  //       )
+  //     : { ...queryConfig, name: data.name };
+  //   navigate({
+  //     pathname: "/",
+  //     search: createSearchParams(config).toString(),
+  //   });
+  // });
+  const { onSubmitSearch, register } = useSearchProducts();
   return (
     <div className="bg-[linear-gradient(-180deg,#f53d2d,#f63)] pb-5 pt-2 text-white">
       <div className="container">
@@ -167,7 +164,7 @@ export default function Header() {
                       </div>
                     </div>
                   ) : (
-                    <div className="p-2">
+                    <div className="flex h-[200px] 2-[200px] items-center p-5 justify-center">
                       <div className="uppercase">không có sản phẩm</div>
                     </div>
                   )}

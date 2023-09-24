@@ -1,9 +1,11 @@
 import React from "react";
 import { Link } from "react-router-dom";
 
+import useSearchProducts from "../hooks/useSearchProducts";
 import NavBar from "./NavBar";
 
 export default function CartHeader() {
+  const { onSubmitSearch, register } = useSearchProducts();
   return (
     <div className="border-b border-b-black/10">
       <div className="bg-[linear-gradient(-180deg,#f53d2d,#f63)] pb-5 pt-2 text-white">
@@ -29,12 +31,13 @@ export default function CartHeader() {
               <div className="capitalize text-orange lg:text-xl">Gio hang</div>
             </Link>
             {/* copy paste from header, remove submit and register */}
-            <form className="mt-3 md:mt-0 md:w-[50%]">
+            <form className="mt-3 md:mt-0 md:w-[50%]" onSubmit={onSubmitSearch}>
               <div className="flex rounded-sm border-2 border-orange">
                 <input
                   type="text"
                   placeholder="Searching...."
                   className="border-none outline-none flex-grow text-black px-3 py-1 w-full"
+                  {...register("name")}
                 />
                 <button className="text-white bg-orange px-8 py-2 rounded-sm hover:opacity-90">
                   <svg
