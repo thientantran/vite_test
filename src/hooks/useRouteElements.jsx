@@ -2,6 +2,9 @@ import React, { useContext } from "react";
 import { Navigate, Outlet, useRoutes } from "react-router-dom";
 
 import CartLayout from "../components/CartLayout";
+import ChangePassword from "../components/ChangePassword";
+import UserHistoryPurchase from "../components/UserHistoryPurchase";
+import UserLayout from "../components/UserLayout";
 import { AppContext } from "../context";
 import MainLayout from "../layouts/MainLayout";
 import RegisterLayout from "../layouts/RegisterLayout";
@@ -27,12 +30,17 @@ export default function useRouteElements() {
       element: <ProtectedRoute />,
       children: [
         {
-          path: "/profile",
+          path: "/user",
           element: (
             <MainLayout>
-              <Profile />
+              <UserLayout />
             </MainLayout>
           ),
+          children: [
+            { path: "/user/profile", element: <Profile /> },
+            { path: "/user/password", element: <ChangePassword /> },
+            { path: "/user/history", element: <UserHistoryPurchase /> },
+          ],
         },
         {
           path: "/cart",

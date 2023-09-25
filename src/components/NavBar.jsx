@@ -2,11 +2,11 @@ import { useMutation } from "@tanstack/react-query";
 import React, { useContext } from "react";
 import { Link } from "react-router-dom";
 
-import Popover from "./Popover";
 import { AppContext } from "../context";
 import { queryClient } from "../main";
 import { purchaseStatus } from "../utils/constants";
 import http from "../utils/http";
+import Popover from "./Popover";
 
 const logout = () => http.post("/logout");
 export default function NavBar() {
@@ -79,7 +79,7 @@ export default function NavBar() {
           renderPopover={
             <div className="relative rounded-sm border border-gray-200 bg-white shadow-md">
               <Link
-                to="/profile"
+                to="/user/profile"
                 className="hover:bg-stale-100 block w-full bg-white px-4 py-3 text-left hover:text-cyan-500"
               >
                 Tai khoan cua toi
