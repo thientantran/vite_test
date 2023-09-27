@@ -1,22 +1,32 @@
 /* eslint-disable react/prop-types */
 import { range } from "lodash";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 
 export default function DateSelect({ value, onChange, errorMessage }) {
+  console.log(value);
   const [date, setDate] = useState({
     date: value?.getDate() || 1,
     month: value?.getMonth() || 0,
     year: value?.getFullYear() || 1990,
   });
+  useEffect(() => {
+    if (value) {
+      setDate({
+        date: value?.getDate(),
+        month: value?.getMonth(),
+        year: value?.getFullYear(),
+      });
+    }
+  }, [value]);
   const handleChange = (event) => {
-    const { value, name } = event.target;
+    const { value: valueForm, name } = event.target;
     const newDate = {
       // ...date,
-      // nên để vậy để hơn ?
+      // nên để vậy để hơn vì nếu dùng date... như ở trên thì nó binding ra 1/1/1900, vì nó fetch api ko kịp, nhưng để useeffect như ở tren thì ok, khắc phục được
       date: value?.getDate() || date.date,
       month: value?.getMonth() || date.month,
       year: value?.getFullYear() || date.year,
-      [name]: Number(value),
+      [name]: Number(valueForm),
     };
     setDate(newDate);
     onChange && onChange(new Date(newDate.year, newDate.month, newDate.date));

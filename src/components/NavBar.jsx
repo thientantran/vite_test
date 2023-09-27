@@ -101,13 +101,16 @@ export default function NavBar() {
         >
           <div className="mr-2 w-8 h-8">
             <img
-              src="https://down-vn.img.susercontent.com/file/br-11134226-7qukw-levcx0zgr2n3d2_tn"
+              src={
+                profile?.avatar ||
+                "https://down-vn.img.susercontent.com/file/br-11134226-7qukw-levcx0zgr2n3d2_tn"
+              }
               alt="avatar"
               className="h-full w-full rounded-full object-cover"
             />
           </div>
 
-          <div>{profile.email}</div>
+          <div>{profile?.name || profile?.email}</div>
         </Popover>
       ) : (
         <div className="flex items-center">

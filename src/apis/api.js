@@ -48,4 +48,7 @@ export const userApi = {
   getProfile() {
     return http.get("me");
   },
+  updateProfile(body) {
+    return http.put(URL.user, body);
+  },
 };

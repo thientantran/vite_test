@@ -1,16 +1,20 @@
 import { yupResolver } from "@hookform/resolvers/yup";
-import { useQuery } from "@tanstack/react-query";
-import React, { useEffect } from "react";
+import { useMutation, useQuery } from "@tanstack/react-query";
+import React, { useContext, useEffect } from "react";
 import { Controller, useForm } from "react-hook-form";
+import { toast } from "react-toastify";
 
 import { userApi } from "../apis/api";
 import Button from "../components/Button";
 import DateSelect from "../components/DateSelect";
 import Input from "../components/Input";
 import InputNumber from "../components/InputNumber";
+import { AppContext } from "../context";
+import { setProfileToLS } from "../utils/auth";
 import { profileSchema } from "../utils/rules";
 
 export default function Profile() {
+  const { setProfile, profile: profileFromLS } = useContext(AppContext);
   // Declare forms
   const {
     register,
@@ -32,7 +36,7 @@ export default function Profile() {
   });
 
   // fetch user data
-  const { data: profileData } = useQuery({
+  const { data: profileData, refetch } = useQuery({
     queryKey: ["profile"],
     queryFn: userApi.getProfile,
   });
@@ -53,6 +57,20 @@ export default function Profile() {
       );
     }
   }, [profile, setValue]);
+
+  const updateProfileMutation = useMutation(userApi.updateProfile);
+  const onSubmit = handleSubmit(async (data) => {
+    // console.log(data);
+    // console.log(data.date_of_birth?.toISOString());
+    const res = await updateProfileMutation.mutateAsync({
+      ...data,
+      date_of_birth: data.date_of_birth?.toISOString(),
+    });
+    refetch();
+    setProfile(res.data.data);
+    setProfileToLS(res.data.data);
+    toast.success(res.data.message);
+  });
   return (
     <div className="pb-10 rounded-sm bg-white px-2 shadow md:px-7 md:pb-20">
       {/* Tieu de */}
@@ -65,7 +83,10 @@ export default function Profile() {
         </div>
       </div>
 
-      <form className="mt-8 flex flex-col-reverse md:flex-row md:items-start">
+      <form
+        className="mt-8 flex flex-col-reverse md:flex-row md:items-start"
+        onSubmit={onSubmit}
+      >
         <div className="mt-6 flex-grow md:mt-0 md:pr-12">
           {/* Email */}
           <div className="flex flex-wrap">
