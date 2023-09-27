@@ -1,9 +1,56 @@
-import React from "react";
+import { yupResolver } from "@hookform/resolvers/yup";
+import { useQuery } from "@tanstack/react-query";
+import React, { useEffect } from "react";
+import { Controller, useForm } from "react-hook-form";
 
+import { userApi } from "../apis/api";
 import Button from "../components/Button";
 import Input from "../components/Input";
+import { profileSchema } from "../utils/rules";
 
 export default function Profile() {
+  // Declare forms
+  const {
+    register,
+    control,
+    formState: { errors },
+    handleSubmit,
+    setValue,
+    watch,
+    setError,
+  } = useForm({
+    defaultValues: {
+      name: "",
+      phone: "",
+      address: "",
+      avatar: "",
+      date_of_birth: new Date(1990, 0, 1),
+    },
+    resolver: yupResolver(profileSchema),
+  });
+
+  // fetch user data
+  const { data: profileData } = useQuery({
+    queryKey: ["profile"],
+    queryFn: userApi.getProfile,
+  });
+
+  const profile = profileData?.data.data;
+
+  useEffect(() => {
+    if (profile) {
+      setValue("name", profile.name);
+      setValue("phone", profile.phone);
+      setValue("address", profile.address);
+      setValue("avatar", profile.avatar);
+      setValue(
+        "date_of_birth",
+        profile.date_of_birth
+          ? new Date(profile.date_of_birth)
+          : new Date(1990, 0, 1),
+      );
+    }
+  }, [profile, setValue]);
   return (
     <div className="pb-10 rounded-sm bg-white px-2 shadow md:px-7 md:pb-20">
       {/* Tieu de */}
@@ -24,7 +71,7 @@ export default function Profile() {
               Email
             </div>
             <div className="pl-5 w-[80%]">
-              <div className="pt-3 text-gray-700">tantran@gmail.com</div>
+              <div className="pt-3 text-gray-700">{profile?.email}</div>
             </div>
           </div>
           {/* Name */}
@@ -33,16 +80,34 @@ export default function Profile() {
               Ten
             </div>
             <div className="pl-5 w-[80%]">
-              <Input classNameInput="w-full rounded-sm border border-gray-300 px-3 py-2 outline-none focus:border-gray-500 focus:shadow-sm" />
+              <Input
+                register={register}
+                name="name"
+                placeholder="Tên"
+                errorMessage={errors.name?.message}
+                classNameInput="w-full rounded-sm border border-gray-300 px-3 py-2 outline-none focus:border-gray-500 focus:shadow-sm"
+              />
             </div>
           </div>
           {/* So dien thoai */}
           <div className="mt-2 flex flex-col flex-wrap md:flex-row">
             <div className="truncate pt-3 text-right capitalize w-[20%]">
-              So dient thoai
+              So dien thoai
             </div>
             <div className="pl-5 w-[80%]">
-              <Input classNameInput="w-full rounded-sm border border-gray-300 px-3 py-2 outline-none focus:border-gray-500 focus:shadow-sm" />
+              <Controller
+                control={control}
+                name="phone"
+                render={({ field }) => (
+                  <Input
+                    classNameInput="w-full rounded-sm border border-gray-300 px-3 py-2 outline-none focus:border-gray-500 focus:shadow-sm"
+                    placeholder="Số điện thoại"
+                    errorMessage={errors.phone?.message}
+                    {...field}
+                    onChange={field.onChange}
+                  />
+                )}
+              />
             </div>
           </div>
           {/* Dia chi */}
@@ -51,7 +116,13 @@ export default function Profile() {
               Dia chi
             </div>
             <div className="pl-5 w-[80%]">
-              <Input classNameInput="w-full rounded-sm border border-gray-300 px-3 py-2 outline-none focus:border-gray-500 focus:shadow-sm" />
+              <Input
+                register={register}
+                name="address"
+                placeholder="Địa chỉ"
+                errorMessage={errors.address?.message}
+                classNameInput="w-full rounded-sm border border-gray-300 px-3 py-2 outline-none focus:border-gray-500 focus:shadow-sm"
+              />
             </div>
           </div>
           {/* Ngay SInh */}
@@ -100,7 +171,7 @@ export default function Profile() {
             </button>
             <div className="mt-3 text-gray-400">
               <div>Dung luong file toi da 1MB</div>
-              div.Dinh dang: .JPEG, .PNG
+              <div>Dinh dang: .JPEG, .PNG</div>
             </div>
           </div>
         </div>

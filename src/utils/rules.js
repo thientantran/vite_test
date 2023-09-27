@@ -47,6 +47,22 @@ export const schema = yup.object({
   name: yup.string().trim().required("Tên sản phẩm là bắt buộc!"),
 });
 
+export const userSchema = yup.object({
+  name: yup.string().max(160, "Độ dài tối đa là 160 ký tự"),
+  phone: yup.string().max(20, "Độ dài tối đa là 20 ký tự"),
+  address: yup.string().max(160, "Độ dài tối đa là 160 ký tự"),
+  avartar: yup.date().max(new Date(), "Hãy chọn ngày trong quá khứ"),
+  password: schema.fields["password"],
+  new_pasword: schema.fields["password"],
+  confirm_password: schema.fields["confirm_password"],
+});
+export const profileSchema = userSchema.pick([
+  "name",
+  "address",
+  "phone",
+  "date_of_birth",
+  "avatar",
+]);
 export const loginSchema = schema.pick(["email", "password"]);
 export const registerSchema = schema.pick([
   "email",

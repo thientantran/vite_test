@@ -4,6 +4,7 @@ const URL = {
   products: "products",
   categories: "categories",
   purchases: "purchases",
+  user: "user",
 };
 
 export const productApi = {
@@ -40,5 +41,11 @@ export const purchaseApi = {
     return http.delete(`${URL.purchases}`, {
       data: purchaseId,
     });
+  },
+};
+
+export const userApi = {
+  getProfile() {
+    return http.get("me");
   },
 };
