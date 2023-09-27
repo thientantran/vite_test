@@ -7,6 +7,7 @@ import { userApi } from "../apis/api";
 import Button from "../components/Button";
 import DateSelect from "../components/DateSelect";
 import Input from "../components/Input";
+import InputNumber from "../components/InputNumber";
 import { profileSchema } from "../utils/rules";
 
 export default function Profile() {
@@ -100,7 +101,7 @@ export default function Profile() {
                 control={control}
                 name="phone"
                 render={({ field }) => (
-                  <Input
+                  <InputNumber
                     classNameInput="w-full rounded-sm border border-gray-300 px-3 py-2 outline-none focus:border-gray-500 focus:shadow-sm"
                     placeholder="Số điện thoại"
                     errorMessage={errors.phone?.message}
@@ -127,7 +128,17 @@ export default function Profile() {
             </div>
           </div>
           {/* Ngay SInh */}
-          <DateSelect />
+          <Controller
+            control={control}
+            name="date_of_birth"
+            render={({ field }) => (
+              <DateSelect
+                errorMessage={errors.date_of_birth?.message}
+                value={field.value}
+                onChange={field.onChange}
+              />
+            )}
+          />
 
           {/* Button */}
           <div className="mt-2 flex flex-col flex-wrap sm:flex-row">
