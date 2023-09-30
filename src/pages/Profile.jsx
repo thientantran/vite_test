@@ -96,7 +96,7 @@ export default function Profile() {
       toast.success(res.data.message);
     } catch (error) {
       if (isAxiosUnprocessableEntityError(error)) {
-        const formError = error.respose?.data.data;
+        const formError = error.response?.data.data;
         if (formError) {
           Object.keys(formError).forEach((key) => {
             setError(key, {
