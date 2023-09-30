@@ -3,7 +3,7 @@ import { range } from "lodash";
 import React, { useEffect, useState } from "react";
 
 export default function DateSelect({ value, onChange, errorMessage }) {
-  console.log(value);
+  // console.log(value);
   const [date, setDate] = useState({
     date: value?.getDate() || 1,
     month: value?.getMonth() || 0,

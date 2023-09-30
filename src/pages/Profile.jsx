@@ -41,6 +41,7 @@ export default function Profile() {
     resolver: yupResolver(profileSchema),
   });
   const avatar = watch("avartar");
+  // console.log(avatar);
   // fetch user data
   const { data: profileData, refetch } = useQuery({
     queryKey: ["profile"],
@@ -65,17 +66,36 @@ export default function Profile() {
   }, [profile, setValue]);
 
   const updateProfileMutation = useMutation(userApi.updateProfile);
+  const uploadAvatarMutation = useMutation(userApi.uploadAvatar);
+  // có 2 flows để upload ảnh lên
+  // flow 1: sau khi bấm nút chọn ảnh thì ảnh sẽ được đưa lên server lun, rồi server trả về URL cho ảnh, sau đó nhấn submit thì gửi thông tin lên lại server để lưu URL
+  // flow 2: chỉ khi bấm lưu mới gửi ảnh lên server, sau đó mới gọi api để tiến hành upload profile: cách này chậm hơn do gọi 2 api nhưng ko bỉ spam ảnh nhiều lên server
   const onSubmit = handleSubmit(async (data) => {
-    // console.log(data);
-    // console.log(data.date_of_birth?.toISOString());
-    const res = await updateProfileMutation.mutateAsync({
-      ...data,
-      date_of_birth: data.date_of_birth?.toISOString(),
-    });
-    refetch();
-    setProfile(res.data.data);
-    setProfileToLS(res.data.data);
-    toast.success(res.data.message);
+    try {
+      // console.log(data);
+      // console.log(data.date_of_birth?.toISOString());
+      let avatarName = avatar;
+      //nếu submit mà có file hình thì gửi file lên trước, sau đó mới gửi cái form data information
+      if (file) {
+        const uploadImageRes = await uploadAvatarMutation.mutateAsync({
+          image: file,
+        });
+        avatarName = uploadImageRes.data.data;
+        setValue("avartar", avatarName);
+      }
+
+      const res = await updateProfileMutation.mutateAsync({
+        ...data,
+        date_of_birth: data.date_of_birth?.toISOString(),
+        avatar: avatarName,
+      });
+      setProfile(res.data.data);
+      setProfileToLS(res.data.data);
+      refetch();
+      toast.success(res.data.message);
+    } catch (error) {
+      console.log(error);
+    }
   });
 
   const handleUpload = () => {

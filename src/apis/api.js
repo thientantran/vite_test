@@ -51,4 +51,11 @@ export const userApi = {
   updateProfile(body) {
     return http.put(URL.user, body);
   },
+  uploadAvatar(body) {
+    return http.post(`${URL.user}/upload-avatar`, body, {
+      headers: {
+        "Content-Type": "multipart/form-data",
+      },
+    });
+  },
 };
