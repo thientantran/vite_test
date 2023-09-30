@@ -11,6 +11,7 @@ import Input from "../components/Input";
 import InputNumber from "../components/InputNumber";
 import { AppContext } from "../context";
 import { setProfileToLS } from "../utils/auth";
+import { isAxiosUnprocessableEntityError } from "../utils/checkError";
 import { getAvatarURL } from "../utils/functions";
 import { profileSchema } from "../utils/rules";
 
@@ -95,7 +96,17 @@ export default function Profile() {
       refetch();
       toast.success(res.data.message);
     } catch (error) {
-      console.log(error);
+      if (isAxiosUnprocessableEntityError(error)) {
+        const formError = error.respose?.data.data;
+        if (formError) {
+          Object.keys(formError).forEach((key) => {
+            setError(key, {
+              message: formError[key],
+              type: "server",
+            });
+          });
+        }
+      }
     }
   });
 
