@@ -21,7 +21,7 @@ export default function Profile() {
   const [file, setFile] = useState();
   const previewImage = useMemo(() => {
     return file ? URL.createObjectURL(file) : "";
-  });
+  }, [file]);
   const { setProfile, profile: profileFromLS } = useContext(AppContext);
   // Declare forms
   const {
@@ -116,7 +116,14 @@ export default function Profile() {
 
   const onFileChange = (event) => {
     const fileFromLocal = event.target.files?.[0];
-    setFile(fileFromLocal);
+    if (
+      fileFromLocal &&
+      (fileFromLocal.size >= 1048576 || fileFromLocal.type.includes("images"))
+    ) {
+      toast.error("File không đúng định dạng");
+    } else {
+      setFile(fileFromLocal);
+    }
   };
   return (
     <div className="pb-10 rounded-sm bg-white px-2 shadow md:px-7 md:pb-20">
@@ -234,6 +241,10 @@ export default function Profile() {
               accept=".jpg, .jpeg,.png"
               ref={inputFileRef}
               onChange={onFileChange}
+              // onchange này chỉ thay đổi cho 2 lần click 2 bức anr khác nhau
+              onClick={(event) => {
+                event.value = null;
+              }}
             />
             <button
               type="button"
