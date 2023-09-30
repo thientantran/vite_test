@@ -5,11 +5,11 @@ import React from "react";
 import { useForm } from "react-hook-form";
 import { toast } from "react-toastify";
 
+import Button from "./Button";
+import Input from "./Input";
 import { userApi } from "../apis/api";
 import { isAxiosUnprocessableEntityError } from "../utils/checkError";
 import { passwordSchema } from "../utils/rules";
-import Button from "./Button";
-import Input from "./Input";
 
 export default function ChangePassword() {
   //Khai báo cho react hook form

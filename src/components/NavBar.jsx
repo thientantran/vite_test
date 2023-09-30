@@ -2,12 +2,12 @@ import { useMutation } from "@tanstack/react-query";
 import React, { useContext } from "react";
 import { Link } from "react-router-dom";
 
+import Popover from "./Popover";
 import { AppContext } from "../context";
 import { queryClient } from "../main";
 import { purchaseStatus } from "../utils/constants";
 import { getAvatarURL } from "../utils/functions";
 import http from "../utils/http";
-import Popover from "./Popover";
 
 const logout = () => http.post("/logout");
 export default function NavBar() {
