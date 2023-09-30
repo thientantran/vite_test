@@ -1,6 +1,6 @@
 import { yupResolver } from "@hookform/resolvers/yup";
 import { useMutation, useQuery } from "@tanstack/react-query";
-import React, { useContext, useEffect } from "react";
+import React, { useContext, useEffect, useMemo, useRef, useState } from "react";
 import { Controller, useForm } from "react-hook-form";
 import { toast } from "react-toastify";
 
@@ -14,6 +14,12 @@ import { setProfileToLS } from "../utils/auth";
 import { profileSchema } from "../utils/rules";
 
 export default function Profile() {
+  const inputFileRef = useRef(null);
+  // Tạo cái này để liên kết với nút button, khi nào nut button click thì nó ref tới chỗ choose file
+  const [file, setFile] = useState();
+  const previewImage = useMemo(() => {
+    return file ? URL.createObjectURL(file) : "";
+  });
   const { setProfile, profile: profileFromLS } = useContext(AppContext);
   // Declare forms
   const {
@@ -34,7 +40,7 @@ export default function Profile() {
     },
     resolver: yupResolver(profileSchema),
   });
-
+  const avatar = watch("avartar");
   // fetch user data
   const { data: profileData, refetch } = useQuery({
     queryKey: ["profile"],
@@ -71,6 +77,15 @@ export default function Profile() {
     setProfileToLS(res.data.data);
     toast.success(res.data.message);
   });
+
+  const handleUpload = () => {
+    inputFileRef.current?.click();
+  };
+
+  const onFileChange = (event) => {
+    const fileFromLocal = event.target.files?.[0];
+    setFile(fileFromLocal);
+  };
   return (
     <div className="pb-10 rounded-sm bg-white px-2 shadow md:px-7 md:pb-20">
       {/* Tieu de */}
@@ -176,13 +191,24 @@ export default function Profile() {
           <div className="flex flex-col items-center">
             <div className="my-5 h-24 w-24">
               <img
-                src="https://down-vn.img.susercontent.com/file/br-11134226-7qukw-levcx0zgr2n3d2_tn"
+                src={previewImage || avatar}
                 alt="avatar"
                 className="f-full w-full rounded-full object-cover"
               />
             </div>
-            <input type="file" className="hidden" accept=".jpg, .jpeg,.png" />
-            <button className="flex h-10 items-center justify-end rounded-sm border bg-white px-6 text-sm text-gray-600 shadow-sm">
+            <input
+              type="file"
+              className="hidden"
+              accept=".jpg, .jpeg,.png"
+              ref={inputFileRef}
+              onChange={onFileChange}
+            />
+            <button
+              type="button"
+              // type button để khi click vào thì ko có submit form
+              onClick={handleUpload}
+              className="flex h-10 items-center justify-end rounded-sm border bg-white px-6 text-sm text-gray-600 shadow-sm"
+            >
               Chon anh
             </button>
             <div className="mt-3 text-gray-400">
