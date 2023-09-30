@@ -51,7 +51,8 @@ class Http {
       function (error) {
         if (error.response?.status !== HttpStatusCode.UnprocessableEntity) {
           const data = error.response?.data;
-          const message = data.message || error.message;
+          // fix loi khi ma` call api bi time out
+          const message = data?.message || error.message;
           toast.error(message);
         }
         if (error.response?.status === HttpStatusCode.Unauthorized) {
