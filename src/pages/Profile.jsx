@@ -11,6 +11,7 @@ import Input from "../components/Input";
 import InputNumber from "../components/InputNumber";
 import { AppContext } from "../context";
 import { setProfileToLS } from "../utils/auth";
+import { getAvatarURL } from "../utils/functions";
 import { profileSchema } from "../utils/rules";
 
 export default function Profile() {
@@ -211,7 +212,7 @@ export default function Profile() {
           <div className="flex flex-col items-center">
             <div className="my-5 h-24 w-24">
               <img
-                src={previewImage || avatar}
+                src={previewImage || getAvatarURL(profile?.avatar)}
                 alt="avatar"
                 className="f-full w-full rounded-full object-cover"
               />

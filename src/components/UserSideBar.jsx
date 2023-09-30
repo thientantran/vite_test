@@ -1,14 +1,18 @@
-import React from "react";
+import React, { useContext } from "react";
 import { Link } from "react-router-dom";
 
+import { AppContext } from "../context";
+import { getAvatarURL } from "../utils/functions";
+
 export default function UserSideBar() {
+  const { profile } = useContext(AppContext);
   return (
     <div>
       {/* Name and Avatar */}
       <div className="flex items-center border-b border-b-gray-200 py-4">
         <Link className="h-12 w-12 flex-shrink-0 overflow-hidden rounded-full border border-black/10">
           <img
-            src="https://down-vn.img.susercontent.com/file/br-11134226-7qukw-levcx0zgr2n3d2_tn"
+            src={getAvatarURL(profile?.avatar)}
             alt="avatar"
             className="h-full w-full rounded-full object-cover"
           />

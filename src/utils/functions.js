@@ -31,3 +31,8 @@ export const getIdFromNameId = (nameId) => {
   const arr = nameId.split("-i,");
   return arr[arr.length - 1];
 };
+
+export const getAvatarURL = (avatarName) =>
+  avatarName
+    ? `https://api-ecom.duthanhduoc.com/images/${avatarName}`
+    : "https://down-vn.img.susercontent.com/file/br-11134226-7qukw-levcx0zgr2n3d2_tn";

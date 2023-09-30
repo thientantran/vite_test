@@ -5,6 +5,7 @@ import { Link } from "react-router-dom";
 import { AppContext } from "../context";
 import { queryClient } from "../main";
 import { purchaseStatus } from "../utils/constants";
+import { getAvatarURL } from "../utils/functions";
 import http from "../utils/http";
 import Popover from "./Popover";
 
@@ -101,10 +102,7 @@ export default function NavBar() {
         >
           <div className="mr-2 w-8 h-8">
             <img
-              src={
-                profile?.avatar ||
-                "https://down-vn.img.susercontent.com/file/br-11134226-7qukw-levcx0zgr2n3d2_tn"
-              }
+              src={getAvatarURL(profile?.avatar)}
               alt="avatar"
               className="h-full w-full rounded-full object-cover"
             />
